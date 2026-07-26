@@ -1,0 +1,13 @@
+{
+  "chainId": 91342,
+  "chainIdHex": "0x164ce",
+  "rpcUrl": "https://sepolia-rpc.giwa.io/",
+  "explorerUrl": "https://sepolia-explorer.giwa.io",
+  "deploymentBlock": null,
+  "contracts": {
+    "BaroCampaignEscrow": null,
+    "BaroReputationSBT": null
+  },
+  "sourceCommit": null
+}
+
