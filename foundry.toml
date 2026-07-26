@@ -13,6 +13,9 @@ line_length = 100
 tab_width = 4
 bracket_spacing = true
 
+[lint]
+# Canonical EIP-712 hashing uses abi.encode; inline assembly would reduce auditability here.
+exclude_lints = ["asm-keccak256"]
+
 [rpc_endpoints]
 giwa_sepolia = "${GIWA_SEPOLIA_RPC_URL}"
-

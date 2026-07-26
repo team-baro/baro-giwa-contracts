@@ -13,7 +13,7 @@ Open-source smart contracts for Baro quest rewards and reputation on GIWA.
 
 ## Contracts
 
-- `BaroCampaignEscrow`: campaign funding, EIP-712 reward claims, withdrawals, and pause controls.
+- `BaroCampaignEscrow`: approved campaign funding, capped EIP-712 reward claims, withdrawals, and pause controls.
 - `BaroReputationSBT`: one non-transferable reputation token per wallet with quest and campaign counters.
 
 Quest activity is verified offchain by Baro. An authorized operator signs a short-lived claim
@@ -27,9 +27,14 @@ Requirements: [Foundry](https://book.getfoundry.sh/getting-started/installation)
 ```bash
 forge install
 forge fmt --check
+forge lint
 forge build --sizes
 forge test -vvv
+scripts/check-coverage.sh
 ```
+
+Run `make simulate-giwa` before `make deploy-giwa`. The deployment target broadcasts both
+contracts and verifies them through the GIWA Blockscout API.
 
 See [claim voucher](docs/claim-voucher.md), [security model](docs/security-model.md), and
 [deployment guide](docs/deployment.md) for integration details.
@@ -39,7 +44,11 @@ See [claim voucher](docs/claim-voucher.md), [security model](docs/security-model
 GIWA Sepolia development. The contracts have not been audited and must not be used with
 real-value assets.
 
+## Security
+
+See [SECURITY.md](SECURITY.md) to report a vulnerability privately. Do not disclose an unpatched
+vulnerability in a public issue.
+
 ## License
 
 MIT
-

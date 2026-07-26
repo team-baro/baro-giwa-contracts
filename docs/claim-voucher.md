@@ -23,5 +23,5 @@ the voucher and signature to `claimReward` on GIWA Sepolia.
 | `deadline` | `uint256` | Last valid Unix timestamp, bounded by campaign end |
 
 The contract additionally binds every signature to the chain and escrow address through the
-EIP-712 domain. Revoking an operator role invalidates that operator's outstanding vouchers.
-
+EIP-712 domain. The amount cannot exceed the campaign's `maxRewardPerClaim`. Revoking an operator
+role invalidates that operator's outstanding vouchers.
