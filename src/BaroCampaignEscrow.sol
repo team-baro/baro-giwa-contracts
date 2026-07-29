@@ -75,6 +75,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
     error RewardExceedsMaximum();
     error UserRewardLimitExceeded();
     error CampaignStillActive();
+    error CampaignOwnerCancelled();
     error NoPendingReputationUpdate();
     error ReputationUpdateNotReady();
     error ExcessBalanceExceeded();
@@ -90,6 +91,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
         uint64 endTime
     );
     event CampaignStatusChanged(uint256 indexed campaignId, bool isActive);
+    event CampaignCancelled(uint256 indexed campaignId, address indexed projectOwner);
     event RewardClaimed(
         uint256 indexed campaignId,
         uint256 indexed questId,
@@ -123,6 +125,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
     uint256 public nextCampaignId = 1;
 
     mapping(uint256 campaignId => Campaign campaign) public campaigns;
+    mapping(uint256 campaignId => bool cancelled) public campaignOwnerCancelled;
     mapping(address user => mapping(uint256 nonce => bool used)) public usedNonces;
     mapping(
         uint256 campaignId => mapping(uint256 questId => mapping(address user => bool claimed))
@@ -282,6 +285,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
 
     function setCampaignActive(uint256 campaignId, bool isActive) external onlyRole(OPERATOR_ROLE) {
         Campaign storage campaign = _getCampaign(campaignId);
+        if (isActive && campaignOwnerCancelled[campaignId]) revert CampaignOwnerCancelled();
         campaign.isActive = isActive;
         emit CampaignStatusChanged(campaignId, isActive);
     }
@@ -290,6 +294,10 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
         Campaign storage campaign = _getCampaign(campaignId);
         if (msg.sender != campaign.projectOwner && !hasRole(OPERATOR_ROLE, msg.sender)) {
             revert NotCampaignOwner();
+        }
+        if (msg.sender == campaign.projectOwner) {
+            campaignOwnerCancelled[campaignId] = true;
+            emit CampaignCancelled(campaignId, campaign.projectOwner);
         }
         campaign.isActive = false;
         emit CampaignStatusChanged(campaignId, false);

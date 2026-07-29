@@ -6,7 +6,7 @@
 - Only operator-approved project wallets can create campaigns.
 - Baro operators verify offchain quest completion and sign reward vouchers.
 - Users submit their own claims and pay the claim transaction gas.
-- The default admin manages operator, escrow, and pause roles.
+- The default admin manages operator, escrow, pause, and metadata roles.
 
 ## Implemented controls
 
@@ -20,7 +20,8 @@
 - `SafeERC20` handles ERC-20 transfers; fee-on-transfer funding is rejected.
 - Claims and campaign creation can be paused without blocking matured withdrawals.
 - Reputation failures are queued for retry and cannot block a valid reward payout.
-- Campaign owners can deactivate their campaigns but cannot withdraw before the configured end.
+- Campaign owners can permanently cancel their campaigns but cannot withdraw before the configured
+  end. An operator pause is reversible; an owner cancellation is not.
 - Matured withdrawals require explicit campaign deactivation.
 - Only balances above recorded campaign liabilities can be recovered by the admin.
 - Reputation uses one aggregate, non-transferable token per wallet. Each completion adds ten points
@@ -28,6 +29,7 @@
 - Channel verification can be updated or revoked when ownership changes.
 - Smart contract wallets do not need to implement `IERC721Receiver` to receive reputation.
 - Default-admin transfers use OpenZeppelin's delayed two-step process.
+- The hot operator role cannot rewrite reputation metadata; `METADATA_ROLE` is granted to the admin.
 
 ## Operational requirements
 

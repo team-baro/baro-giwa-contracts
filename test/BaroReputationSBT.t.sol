@@ -56,15 +56,23 @@ contract BaroReputationSBTTest is Test {
         assertTrue(verified);
     }
 
-    function testTokenURIUsesOperatorManagedBaseURI() external {
+    function testTokenURIUsesAdminManagedBaseURI() external {
         vm.prank(escrow);
         reputation.recordQuestCompletion(user, 1, 1, 10);
         uint256 tokenId = reputation.tokenIds(user);
         assertEq(reputation.tokenURI(tokenId), "https://api.baro.quest/sbt/1");
 
-        vm.prank(operator);
+        vm.prank(admin);
         reputation.setBaseURI("ipfs://baro/");
         assertEq(reputation.tokenURI(tokenId), "ipfs://baro/1");
+    }
+
+    function testOperatorCannotChangeBaseURI() external {
+        vm.expectPartialRevert(
+            bytes4(keccak256("AccessControlUnauthorizedAccount(address,bytes32)"))
+        );
+        vm.prank(operator);
+        reputation.setBaseURI("ipfs://attacker/");
     }
 
     function testRejectsUnauthorizedCompletion() external {

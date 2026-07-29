@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import { Test } from "forge-std/Test.sol";
 import { SafeCast } from "@openzeppelin/contracts/utils/math/SafeCast.sol";
+import { ERC1271WalletMock } from "@openzeppelin/contracts/mocks/ERC1271WalletMock.sol";
 
 import { BaroCampaignEscrow } from "../src/BaroCampaignEscrow.sol";
 import { BaroReputationSBT } from "../src/BaroReputationSBT.sol";
@@ -98,6 +99,24 @@ contract BaroCampaignEscrowTest is Test {
 
         assertEq(address(wallet).balance, 1 ether);
         assertEq(reputation.balanceOf(address(wallet)), 1);
+    }
+
+    function testERC1271OperatorCanSignClaim() external {
+        uint256 contractSignerKey = 0xC0DE;
+        ERC1271WalletMock contractSigner = new ERC1271WalletMock(vm.addr(contractSignerKey));
+        bytes32 operatorRole = escrow.OPERATOR_ROLE();
+        vm.prank(admin);
+        escrow.grantRole(operatorRole, address(contractSigner));
+
+        uint256 campaignId = _createNativeCampaign(block.timestamp, block.timestamp + 1 days);
+        BaroCampaignEscrow.QuestClaim memory claim = _claim(campaignId, address(0), 1 ether, 18);
+        bytes memory signature = _sign(claim, contractSignerKey);
+
+        vm.prank(user);
+        escrow.claimReward(claim, address(contractSigner), signature);
+
+        assertEq(user.balance, 1 ether);
+        assertTrue(escrow.claimedQuests(campaignId, claim.questId, user));
     }
 
     function testOnlyApprovedCreatorCanCreateCampaign() external {
@@ -262,6 +281,29 @@ contract BaroCampaignEscrowTest is Test {
         assertEq(projectOwner.balance, balanceBefore + BUDGET);
     }
 
+    function testOwnerCancellationCannotBeReactivatedByOperator() external {
+        uint256 campaignId = _createNativeCampaign(block.timestamp, block.timestamp + 1 days);
+        vm.prank(projectOwner);
+        escrow.deactivateCampaign(campaignId);
+
+        assertTrue(escrow.campaignOwnerCancelled(campaignId));
+        vm.expectRevert(BaroCampaignEscrow.CampaignOwnerCancelled.selector);
+        vm.prank(operator);
+        escrow.setCampaignActive(campaignId, true);
+    }
+
+    function testOperatorCanTemporarilyDeactivateAndReactivateCampaign() external {
+        uint256 campaignId = _createNativeCampaign(block.timestamp, block.timestamp + 1 days);
+        vm.prank(operator);
+        escrow.deactivateCampaign(campaignId);
+        assertFalse(escrow.campaignOwnerCancelled(campaignId));
+
+        vm.prank(operator);
+        escrow.setCampaignActive(campaignId, true);
+        (,,,,,,,, bool isActive) = escrow.campaigns(campaignId);
+        assertTrue(isActive);
+    }
+
     function testActiveCampaignCannotBeWithdrawnAfterEnd() external {
         uint256 campaignId = _createNativeCampaign(block.timestamp, block.timestamp + 1 days);
         vm.warp(block.timestamp + 1 days + 1);
@@ -309,6 +351,23 @@ contract BaroCampaignEscrowTest is Test {
         assertFalse(escrow.pendingReputationUpdates(campaignId, claim.questId, user));
         (uint64 points,,,,,) = reputation.reputations(user);
         assertEq(points, 10);
+    }
+
+    function testReputationSbtUpdateRequiresDelay() external {
+        BaroReputationSBT replacement =
+            new BaroReputationSBT(admin, operator, address(escrow), "ipfs://replacement/");
+
+        vm.prank(admin);
+        escrow.scheduleReputationSbtUpdate(replacement);
+
+        vm.expectRevert(BaroCampaignEscrow.ReputationUpdateNotReady.selector);
+        vm.prank(admin);
+        escrow.executeReputationSbtUpdate();
+
+        vm.warp(block.timestamp + escrow.REPUTATION_UPDATE_DELAY());
+        vm.prank(admin);
+        escrow.executeReputationSbtUpdate();
+        assertEq(address(escrow.reputationSbt()), address(replacement));
     }
 
     function testAdminRecoversOnlyNativeBalanceAboveLiability() external {

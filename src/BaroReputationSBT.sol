@@ -11,6 +11,7 @@ import { IBaroReputationSBT } from "./interfaces/IBaroReputationSBT.sol";
 contract BaroReputationSBT is ERC721, AccessControlDefaultAdminRules, IBaroReputationSBT {
     bytes32 public constant ESCROW_ROLE = keccak256("ESCROW_ROLE");
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
+    bytes32 public constant METADATA_ROLE = keccak256("METADATA_ROLE");
 
     struct Reputation {
         uint64 questPoints;
@@ -61,6 +62,7 @@ contract BaroReputationSBT is ERC721, AccessControlDefaultAdminRules, IBaroReput
         }
         _grantRole(OPERATOR_ROLE, operator);
         _grantRole(ESCROW_ROLE, escrow);
+        _grantRole(METADATA_ROLE, admin);
         _baseTokenUri = baseTokenURI;
     }
 
@@ -128,7 +130,7 @@ contract BaroReputationSBT is ERC721, AccessControlDefaultAdminRules, IBaroReput
         emit ChannelVerificationUpdated(user, isVerified, channelScore);
     }
 
-    function setBaseURI(string calldata baseTokenURI) external onlyRole(OPERATOR_ROLE) {
+    function setBaseURI(string calldata baseTokenURI) external onlyRole(METADATA_ROLE) {
         _baseTokenUri = baseTokenURI;
         emit BaseURIUpdated(baseTokenURI);
     }
