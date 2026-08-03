@@ -6,8 +6,8 @@
   "deploymentBlock": null,
   "contracts": {
     "BaroCampaignEscrow": null,
-    "BaroReputationSBT": null
+    "BaroReputationSBT": null,
+    "BaroQuestTestToken": null
   },
   "sourceCommit": null
 }
-

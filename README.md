@@ -17,6 +17,8 @@ Open-source smart contracts for Baro quest rewards and reputation on GIWA.
   liability accounting, recoverable reputation updates, withdrawals, and pause controls.
 - `BaroReputationSBT`: one non-transferable aggregate reputation token per wallet with quest points,
   quest count, campaign count, and revocable channel verification.
+- `BaroQuestTestToken`: fixed-supply `BQT` reward token used only for the GIWA Sepolia pilot. It has
+  no mint function and represents no real-world value.
 
 Quest activity is verified offchain by Baro. An authorized operator signs a short-lived claim
 voucher, and the user submits it onchain. Reward delivery remains available during a reputation
