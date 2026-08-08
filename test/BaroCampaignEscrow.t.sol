@@ -11,16 +11,21 @@ import { MockERC20, NonReceiverWallet } from "./mocks/MockERC20.sol";
 
 contract BaroCampaignEscrowTest is Test {
     using SafeCast for uint256;
+
+    // Default campaign shape shared by most tests: a 10 ether budget capped at 2 ether per
+    // claim and 4 ether per user, so the per-claim and per-user limits can be hit separately.
     uint256 private constant OPERATOR_KEY = 0xB0B;
     uint128 private constant BUDGET = 10 ether;
     uint128 private constant MAX_REWARD = 2 ether;
     uint128 private constant MAX_REWARD_PER_USER = 4 ether;
 
+    // Actors.
     address private admin = makeAddr("admin");
     address private operator = vm.addr(OPERATOR_KEY);
     address private projectOwner = makeAddr("projectOwner");
     address private user = makeAddr("user");
 
+    // Contracts under test.
     BaroCampaignEscrow private escrow;
     BaroReputationSBT private reputation;
     MockERC20 private rewardToken;
@@ -405,6 +410,11 @@ contract BaroCampaignEscrowTest is Test {
         escrow.claimReward(claim, operator, signature);
     }
 
+    /*//////////////////////////////////////////////////////////////
+                                 HELPERS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @dev Funds a native-GIWA campaign from `projectOwner` using the default budget shape.
     function _createNativeCampaign(uint256 startTime, uint256 endTime)
         private
         returns (uint256 campaignId)
@@ -421,6 +431,7 @@ contract BaroCampaignEscrowTest is Test {
         );
     }
 
+    /// @dev Builds a claim for the default `user`. Thin wrapper over {_claimFor}.
     function _claim(uint256 campaignId, address token, uint256 amount, uint256 nonce)
         private
         view
@@ -429,6 +440,7 @@ contract BaroCampaignEscrowTest is Test {
         return _claimFor(user, campaignId, token, amount, nonce);
     }
 
+    /// @dev Builds a claim for an arbitrary recipient against the default quest id.
     function _claimFor(
         address recipient,
         uint256 campaignId,
@@ -439,6 +451,8 @@ contract BaroCampaignEscrowTest is Test {
         return _claimForQuest(recipient, campaignId, token, amount, nonce, 42);
     }
 
+    /// @dev Fully specified claim builder. Deadline is always 1 hour out, which sits inside
+    ///      the default campaign window unless a test deliberately shortens it.
     function _claimForQuest(
         address recipient,
         uint256 campaignId,
@@ -458,6 +472,7 @@ contract BaroCampaignEscrowTest is Test {
         });
     }
 
+    /// @dev Signs a claim with `signerKey` over the contract's own EIP-712 digest.
     function _sign(BaroCampaignEscrow.QuestClaim memory claim, uint256 signerKey)
         private
         view

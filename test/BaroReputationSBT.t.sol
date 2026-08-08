@@ -6,12 +6,15 @@ import { Test } from "forge-std/Test.sol";
 import { BaroReputationSBT } from "../src/BaroReputationSBT.sol";
 
 contract BaroReputationSBTTest is Test {
+    // Actors. `escrow` is a plain EOA here so tests can drive the escrow-only entry points
+    // directly, without standing up a real BaroCampaignEscrow.
     address private admin = makeAddr("admin");
     address private operator = makeAddr("operator");
     address private escrow = makeAddr("escrow");
     address private user = makeAddr("user");
     address private recipient = makeAddr("recipient");
 
+    // Contract under test.
     BaroReputationSBT private reputation;
 
     function setUp() external {
