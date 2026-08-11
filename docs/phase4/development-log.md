@@ -9,3 +9,4 @@ No deployment or push is implied by this log.
 | Step | Allocated author date | Actual work date (KST) | Change |
 | --- | --- | --- | --- |
 | 1 | 2026-08-10 | 2026-11-28 | docs: define phase four contract scope |
+| 2 | 2026-08-11 | 2026-11-28 | docs: define index snapshot format |
