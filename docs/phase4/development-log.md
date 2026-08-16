@@ -12,3 +12,4 @@ No deployment or push is implied by this log.
 | 2 | 2026-08-11 | 2026-11-28 | docs: define index snapshot format |
 | 3 | 2026-08-12 | 2026-11-28 | docs: define daily publication rules |
 | 4 | 2026-08-15 | 2026-11-28 | docs: define attendance attestation lifecycle |
+| 5 | 2026-08-16 | 2026-11-28 | docs: define verified wallet eligibility |
