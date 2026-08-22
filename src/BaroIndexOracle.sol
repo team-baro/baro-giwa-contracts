@@ -24,4 +24,16 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
         bool exists;
     }
     mapping(uint256 day => Snapshot snapshot) public snapshots;
+    event SnapshotPublished(
+        uint256 indexed day, uint8 fearGreed, bytes32 projectRoot, bytes32 sourceHash
+    );
+
+    /// @notice Publish an aggregate observation and its verifiable public source commitment.
+    function publish(uint256 day, uint8 fearGreed, bytes32 projectRoot, bytes32 sourceHash)
+        external
+        onlyRole(PUBLISHER_ROLE)
+    {
+        snapshots[day] = Snapshot(fearGreed, projectRoot, sourceHash, block.timestamp, true);
+        emit SnapshotPublished(day, fearGreed, projectRoot, sourceHash);
+    }
 }

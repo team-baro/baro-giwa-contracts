@@ -16,3 +16,4 @@ No deployment or push is implied by this log.
 | 6 | 2026-08-17 | 2026-11-28 | docs: define performance payout model |
 | 7 | 2026-08-18 | 2026-11-28 | feat: add index oracle storage |
 | 8 | 2026-08-19 | 2026-11-28 | feat: add index publisher authorization |
+| 9 | 2026-08-22 | 2026-11-28 | feat: publish daily index snapshots |
