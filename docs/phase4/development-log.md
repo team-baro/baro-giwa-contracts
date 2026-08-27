@@ -18,3 +18,4 @@ No deployment or push is implied by this log.
 | 8 | 2026-08-19 | 2026-11-28 | feat: add index publisher authorization |
 | 9 | 2026-08-22 | 2026-11-28 | feat: publish daily index snapshots |
 | 10 | 2026-08-24 | 2026-11-28 | feat: enforce current day publication |
+| 11 | 2026-08-27 | 2026-11-28 | feat: reject duplicate daily snapshots |

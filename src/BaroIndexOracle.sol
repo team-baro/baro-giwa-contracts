@@ -11,6 +11,7 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
     bytes32 public constant PUBLISHER_ROLE = keccak256("PUBLISHER_ROLE");
     error InvalidAddress();
     error NotCurrentDay();
+    error AlreadyPublished();
 
     constructor(address admin, address publisher) AccessControlDefaultAdminRules(1 days, admin) {
         if (publisher == address(0)) revert InvalidAddress();
@@ -35,6 +36,7 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
         onlyRole(PUBLISHER_ROLE)
     {
         if (day != block.timestamp / 1 days) revert NotCurrentDay();
+        if (snapshots[day].exists) revert AlreadyPublished();
         snapshots[day] = Snapshot(fearGreed, projectRoot, sourceHash, block.timestamp, true);
         emit SnapshotPublished(day, fearGreed, projectRoot, sourceHash);
     }
