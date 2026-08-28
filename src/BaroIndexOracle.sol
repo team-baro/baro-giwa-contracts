@@ -12,6 +12,7 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
     error InvalidAddress();
     error NotCurrentDay();
     error AlreadyPublished();
+    error InvalidSnapshot();
 
     constructor(address admin, address publisher) AccessControlDefaultAdminRules(1 days, admin) {
         if (publisher == address(0)) revert InvalidAddress();
@@ -37,6 +38,9 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
     {
         if (day != block.timestamp / 1 days) revert NotCurrentDay();
         if (snapshots[day].exists) revert AlreadyPublished();
+        if (fearGreed > 100 || projectRoot == bytes32(0) || sourceHash == bytes32(0)) {
+            revert InvalidSnapshot();
+        }
         snapshots[day] = Snapshot(fearGreed, projectRoot, sourceHash, block.timestamp, true);
         emit SnapshotPublished(day, fearGreed, projectRoot, sourceHash);
     }
