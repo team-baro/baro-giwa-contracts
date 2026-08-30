@@ -27,6 +27,8 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
         bool exists;
     }
     mapping(uint256 day => Snapshot snapshot) public snapshots;
+    uint256 public latestDay;
+    uint256 public snapshotCount;
     event SnapshotPublished(
         uint256 indexed day, uint8 fearGreed, bytes32 projectRoot, bytes32 sourceHash
     );
@@ -42,6 +44,13 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
             revert InvalidSnapshot();
         }
         snapshots[day] = Snapshot(fearGreed, projectRoot, sourceHash, block.timestamp, true);
+        latestDay = day;
+        snapshotCount += 1;
         emit SnapshotPublished(day, fearGreed, projectRoot, sourceHash);
+    }
+
+    /// @notice Empty history returns a Snapshot whose exists field is false.
+    function latestSnapshot() external view returns (uint256 day, Snapshot memory snapshot) {
+        return (latestDay, snapshots[latestDay]);
     }
 }

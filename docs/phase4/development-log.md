@@ -20,3 +20,4 @@ No deployment or push is implied by this log.
 | 10 | 2026-08-24 | 2026-11-28 | feat: enforce current day publication |
 | 11 | 2026-08-27 | 2026-11-28 | feat: reject duplicate daily snapshots |
 | 12 | 2026-08-28 | 2026-11-28 | feat: validate index values and commitments |
+| 13 | 2026-08-30 | 2026-11-28 | feat: add index history queries |
