@@ -21,3 +21,4 @@ No deployment or push is implied by this log.
 | 11 | 2026-08-27 | 2026-11-28 | feat: reject duplicate daily snapshots |
 | 12 | 2026-08-28 | 2026-11-28 | feat: validate index values and commitments |
 | 13 | 2026-08-30 | 2026-11-28 | feat: add index history queries |
+| 14 | 2026-09-01 | 2026-11-28 | feat: verify project index proofs |
