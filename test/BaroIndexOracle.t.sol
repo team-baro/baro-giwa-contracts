@@ -63,4 +63,32 @@ contract BaroIndexOracleTest is Test {
         vm.expectRevert(BaroIndexOracle.InvalidSnapshot.selector);
         oracle.publish(DAY, 50, PROJECT, bytes32(0));
     }
+
+    function testFuzzRejectsInvalidFearGreed(uint8 value) public {
+        value = uint8(bound(value, 101, 255));
+        vm.expectRevert(BaroIndexOracle.InvalidSnapshot.selector);
+        oracle.publish(DAY, value, PROJECT, SOURCE);
+    }
+
+    function testFuzzRejectsInvalidProjectValues(uint16 share, int32 gap) public {
+        vm.assume(share > 10_000 || gap < -10_000 || gap > 10_000);
+        vm.expectRevert(BaroIndexOracle.InvalidSnapshot.selector);
+        oracle.projectLeaf(DAY, PROJECT, share, gap);
+    }
+
+    function testRejectsZeroProjectId() public {
+        vm.expectRevert(BaroIndexOracle.InvalidSnapshot.selector);
+        oracle.projectLeaf(DAY, bytes32(0), 0, 0);
+    }
+
+    function testTwoProjectMerkleProof() public {
+        bytes32 a = oracle.projectLeaf(DAY, PROJECT, 5_000, 200);
+        bytes32 b = oracle.projectLeaf(DAY, keccak256("other"), 5_000, -200);
+        bytes32 root = a < b ? keccak256(abi.encodePacked(a, b)) : keccak256(abi.encodePacked(b, a));
+        oracle.publish(DAY, 50, root, SOURCE);
+        bytes32[] memory proof = new bytes32[](1);
+        proof[0] = b;
+        assertTrue(oracle.verifyProject(DAY, PROJECT, 5_000, 200, proof));
+        assertFalse(oracle.verifyProject(DAY, PROJECT, 5_000, -200, proof));
+    }
 }
