@@ -24,3 +24,4 @@ No deployment or push is implied by this log.
 | 14 | 2026-09-01 | 2026-11-28 | feat: verify project index proofs |
 | 15 | 2026-09-03 | 2026-11-28 | test: cover daily publication boundaries |
 | 16 | 2026-09-05 | 2026-11-28 | test: fuzz index snapshot validation |
+| 17 | 2026-09-08 | 2026-11-28 | test: enforce snapshot immutability |

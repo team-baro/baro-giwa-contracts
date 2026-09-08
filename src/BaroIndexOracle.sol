@@ -45,7 +45,13 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
         if (fearGreed > 100 || projectRoot == bytes32(0) || sourceHash == bytes32(0)) {
             revert InvalidSnapshot();
         }
-        snapshots[day] = Snapshot(fearGreed, projectRoot, sourceHash, block.timestamp, true);
+        snapshots[day] = Snapshot({
+            fearGreed: fearGreed,
+            projectRoot: projectRoot,
+            sourceHash: sourceHash,
+            publishedAt: block.timestamp,
+            exists: true
+        });
         latestDay = day;
         snapshotCount += 1;
         emit SnapshotPublished(day, fearGreed, projectRoot, sourceHash);
@@ -63,7 +69,9 @@ contract BaroIndexOracle is AccessControlDefaultAdminRules {
         returns (bytes32)
     {
         if (projectId == bytes32(0) || mindshareBps > 10_000 || gapBps < -10_000 || gapBps > 10_000)
-        revert InvalidSnapshot();
+        {
+            revert InvalidSnapshot();
+        }
         return keccak256(bytes.concat(keccak256(abi.encode(day, projectId, mindshareBps, gapBps))));
     }
 

@@ -91,4 +91,21 @@ contract BaroIndexOracleTest is Test {
         assertTrue(oracle.verifyProject(DAY, PROJECT, 5_000, 200, proof));
         assertFalse(oracle.verifyProject(DAY, PROJECT, 5_000, -200, proof));
     }
+
+    function testPublisherRotationCannotRewriteHistory() public {
+        oracle.publish(DAY, 50, PROJECT, SOURCE);
+        address next = address(456);
+        oracle.grantRole(oracle.PUBLISHER_ROLE(), next);
+        oracle.revokeRole(oracle.PUBLISHER_ROLE(), address(this));
+        vm.prank(next);
+        vm.expectRevert(BaroIndexOracle.AlreadyPublished.selector);
+        oracle.publish(DAY, 0, PROJECT, SOURCE);
+        vm.warp((DAY + 2) * 1 days);
+        vm.prank(next);
+        vm.expectRevert(BaroIndexOracle.NotCurrentDay.selector);
+        oracle.publish(DAY + 1, 0, PROJECT, SOURCE);
+        (, BaroIndexOracle.Snapshot memory snapshot) = oracle.latestSnapshot();
+        assertEq(snapshot.fearGreed, 50);
+        assertEq(oracle.snapshotCount(), 1);
+    }
 }
