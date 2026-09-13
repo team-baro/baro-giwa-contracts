@@ -13,6 +13,18 @@ contract PublishIndex is Script {
         uint256 fear = vm.envUint("BARO_FEAR_GREED");
         bytes32 root = vm.envBytes32("BARO_PROJECT_ROOT");
         bytes32 source = vm.envBytes32("BARO_SOURCE_HASH");
+        return publishSnapshot(oracle, publisher, day, fear, root, source);
+    }
+
+    function publishSnapshot(
+        BaroIndexOracle oracle,
+        address publisher,
+        uint256 day,
+        uint256 fear,
+        bytes32 root,
+        bytes32 source
+    ) public returns (bool) {
+        require(block.chainid == 91_342, "Wrong chain");
         require(day == block.timestamp / 1 days, "Not current UTC day");
         require(fear <= 100 && root != bytes32(0) && source != bytes32(0), "Invalid snapshot");
         require(oracle.hasRole(oracle.PUBLISHER_ROLE(), publisher), "Missing publisher role");
