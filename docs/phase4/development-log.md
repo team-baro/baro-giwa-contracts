@@ -29,3 +29,4 @@ No deployment or push is implied by this log.
 | 19 | 2026-09-13 | 2026-11-28 | test: cover publisher retry behavior |
 | 20 | 2026-09-15 | 2026-11-28 | docs: document index publication operations |
 | 21 | 2026-09-18 | 2026-11-28 | feat: add attendance session registry |
+| 22 | 2026-09-19 | 2026-11-28 | feat: configure attendance session windows |
