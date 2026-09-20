@@ -30,3 +30,4 @@ No deployment or push is implied by this log.
 | 20 | 2026-09-15 | 2026-11-28 | docs: document index publication operations |
 | 21 | 2026-09-18 | 2026-11-28 | feat: add attendance session registry |
 | 22 | 2026-09-19 | 2026-11-28 | feat: configure attendance session windows |
+| 23 | 2026-09-20 | 2026-11-28 | feat: add EAS attestation adapter |

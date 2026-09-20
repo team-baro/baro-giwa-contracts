@@ -4,6 +4,14 @@ import {
     AccessControlDefaultAdminRules
 } from "@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol";
 
+import {
+    IEAS,
+    ISchemaRegistry,
+    SchemaRecord,
+    AttestationRequest,
+    AttestationRequestData
+} from "./interfaces/IEAS.sol";
+
 /// @title BaroAttendance
 /// @notice Wallet-bound EAS attendance approved by each session's authorized organizer.
 contract BaroAttendance is AccessControlDefaultAdminRules {
@@ -19,8 +27,22 @@ contract BaroAttendance is AccessControlDefaultAdminRules {
     error InvalidConfiguration();
     mapping(uint256 sessionId => Session session) public sessions;
 
-    constructor(address admin, address organizer) AccessControlDefaultAdminRules(1 days, admin) {
+    IEAS public immutable eas;
+    bytes32 public immutable schema;
+    string public constant SCHEMA = "uint256 sessionId,uint8 kind,bytes32 metadataHash";
+
+    constructor(address admin, address organizer, IEAS eas_, bytes32 schema_)
+        AccessControlDefaultAdminRules(1 days, admin)
+    {
         if (organizer == address(0)) revert InvalidConfiguration();
+        if (address(eas_).code.length == 0 || schema_ == bytes32(0)) revert InvalidConfiguration();
+        SchemaRecord memory record = eas_.getSchemaRegistry().getSchema(schema_);
+        if (
+            record.uid != schema_ || record.resolver != address(0) || record.revocable
+                || keccak256(bytes(record.schema)) != keccak256(bytes(SCHEMA))
+        ) revert InvalidConfiguration();
+        eas = eas_;
+        schema = schema_;
         _grantRole(ORGANIZER_ROLE, organizer);
     }
 
