@@ -12,9 +12,15 @@ import {
     AttestationRequestData
 } from "./interfaces/IEAS.sol";
 
+import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import { SignatureChecker } from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+
 /// @title BaroAttendance
 /// @notice Wallet-bound EAS attendance approved by each session's authorized organizer.
-contract BaroAttendance is AccessControlDefaultAdminRules {
+contract BaroAttendance is AccessControlDefaultAdminRules, EIP712 {
+    bytes32 public constant CLAIM_TYPEHASH =
+        keccak256("AttendanceClaim(uint256 sessionId,address user,uint256 deadline)");
+    error InvalidClaim();
     bytes32 public constant ORGANIZER_ROLE = keccak256("ORGANIZER_ROLE");
 
     struct Session {
@@ -33,6 +39,7 @@ contract BaroAttendance is AccessControlDefaultAdminRules {
 
     constructor(address admin, address organizer, IEAS eas_, bytes32 schema_)
         AccessControlDefaultAdminRules(1 days, admin)
+        EIP712("BaroAttendance", "1")
     {
         if (organizer == address(0)) revert InvalidConfiguration();
         if (address(eas_).code.length == 0 || schema_ == bytes32(0)) revert InvalidConfiguration();
@@ -81,5 +88,27 @@ contract BaroAttendance is AccessControlDefaultAdminRules {
             organizer: msg.sender, start: start, end: end, kind: kind, metadataHash: metadataHash
         });
         emit SessionCreated(sessionId, msg.sender, start, end, kind, metadataHash);
+    }
+
+    function hashClaim(uint256 sessionId, address user, uint256 deadline)
+        public
+        view
+        returns (bytes32)
+    {
+        return _hashTypedDataV4(keccak256(abi.encode(CLAIM_TYPEHASH, sessionId, user, deadline)));
+    }
+
+    function _validateClaim(uint256 sessionId, uint256 deadline, bytes calldata signature)
+        internal
+        view
+    {
+        Session storage session = sessions[sessionId];
+        if (
+            !hasRole(ORGANIZER_ROLE, session.organizer) || deadline < block.timestamp
+                || deadline > session.end
+                || !SignatureChecker.isValidSignatureNow(
+                    session.organizer, hashClaim(sessionId, msg.sender, deadline), signature
+                )
+        ) revert InvalidClaim();
     }
 }
