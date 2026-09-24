@@ -32,3 +32,4 @@ No deployment or push is implied by this log.
 | 22 | 2026-09-19 | 2026-11-28 | feat: configure attendance session windows |
 | 23 | 2026-09-20 | 2026-11-28 | feat: add EAS attestation adapter |
 | 24 | 2026-09-22 | 2026-11-28 | feat: verify attendance claim signatures |
+| 25 | 2026-09-24 | 2026-11-28 | feat: enforce attendance claim windows |
