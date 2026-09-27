@@ -22,6 +22,8 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712 {
         keccak256("AttendanceClaim(uint256 sessionId,address user,uint256 deadline)");
     error InvalidClaim();
     error OutsideSessionWindow();
+    error AlreadyClaimed();
+    mapping(uint256 sessionId => mapping(address user => bool)) public claimed;
     bytes32 public constant ORGANIZER_ROLE = keccak256("ORGANIZER_ROLE");
 
     struct Session {
@@ -104,6 +106,7 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712 {
         view
     {
         Session storage session = sessions[sessionId];
+        if (claimed[sessionId][msg.sender]) revert AlreadyClaimed();
         if (
             session.organizer == address(0) || block.timestamp < session.start
                 || block.timestamp >= session.end
