@@ -34,3 +34,4 @@ No deployment or push is implied by this log.
 | 24 | 2026-09-22 | 2026-11-28 | feat: verify attendance claim signatures |
 | 25 | 2026-09-24 | 2026-11-28 | feat: enforce attendance claim windows |
 | 26 | 2026-09-27 | 2026-11-28 | feat: prevent duplicate attendance claims |
+| 27 | 2026-09-30 | 2026-11-28 | feat: issue attendance attestations |

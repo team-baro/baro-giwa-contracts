@@ -15,9 +15,12 @@ import {
 import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import { SignatureChecker } from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
+
 /// @title BaroAttendance
 /// @notice Wallet-bound EAS attendance approved by each session's authorized organizer.
-contract BaroAttendance is AccessControlDefaultAdminRules, EIP712 {
+contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGuard, Pausable {
     bytes32 public constant CLAIM_TYPEHASH =
         keccak256("AttendanceClaim(uint256 sessionId,address user,uint256 deadline)");
     error InvalidClaim();
@@ -118,5 +121,39 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712 {
                     session.organizer, hashClaim(sessionId, msg.sender, deadline), signature
                 )
         ) revert InvalidClaim();
+    }
+
+    /// @notice Recipient claims an irrevocable, zero-fee EAS attestation during the session.
+    function claim(uint256 sessionId, uint256 deadline, bytes calldata signature)
+        external
+        nonReentrant
+        whenNotPaused
+        returns (bytes32 uid)
+    {
+        _validateClaim(sessionId, deadline, signature);
+        Session storage session = sessions[sessionId];
+        claimed[sessionId][msg.sender] = true;
+        uid = eas.attest(
+            AttestationRequest({
+                schema: schema,
+                data: AttestationRequestData({
+                    recipient: msg.sender,
+                    expirationTime: 0,
+                    revocable: false,
+                    refUID: bytes32(0),
+                    data: abi.encode(sessionId, session.kind, session.metadataHash),
+                    value: 0
+                })
+            })
+        );
+        if (uid == bytes32(0)) revert InvalidClaim();
+    }
+
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _pause();
+    }
+
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _unpause();
     }
 }
