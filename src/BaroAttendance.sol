@@ -27,6 +27,9 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
     error OutsideSessionWindow();
     error AlreadyClaimed();
     mapping(uint256 sessionId => mapping(address user => bool)) public claimed;
+    mapping(uint256 sessionId => mapping(address user => bytes32 uid)) public attestationUIDs;
+    uint256 public attestationCount;
+    event AttendanceAttested(uint256 indexed sessionId, address indexed user, bytes32 indexed uid);
     bytes32 public constant ORGANIZER_ROLE = keccak256("ORGANIZER_ROLE");
 
     struct Session {
@@ -147,6 +150,9 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
             })
         );
         if (uid == bytes32(0)) revert InvalidClaim();
+        attestationUIDs[sessionId][msg.sender] = uid;
+        attestationCount += 1;
+        emit AttendanceAttested(sessionId, msg.sender, uid);
     }
 
     function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
