@@ -164,4 +164,38 @@ contract BaroAttendanceTest is Test {
         attendance.claim(2, END, sig);
         assertEq(attendance.attestationCount(), 1);
     }
+
+    function testEASRevertRollsBackAndAllowsRetry() public {
+        bytes memory sig = signature(1, user, END);
+        eas.configure(true, false, false);
+        vm.prank(user);
+        vm.expectRevert("EAS write failure");
+        attendance.claim(1, END, sig);
+        assertFalse(attendance.claimed(1, user));
+        assertEq(attendance.attestationCount(), 0);
+        eas.configure(false, false, false);
+        vm.prank(user);
+        attendance.claim(1, END, sig);
+        assertTrue(attendance.claimed(1, user));
+    }
+
+    function testZeroUIDRollsBack() public {
+        bytes memory sig = signature(1, user, END);
+        eas.configure(false, false, true);
+        vm.prank(user);
+        vm.expectRevert(BaroAttendance.InvalidClaim.selector);
+        attendance.claim(1, END, sig);
+        assertFalse(attendance.claimed(1, user));
+        assertEq(attendance.attestationUIDs(1, user), bytes32(0));
+    }
+
+    function testEASCallbackCannotReenter() public {
+        bytes memory sig = signature(1, user, END);
+        eas.setCallback(address(attendance), abi.encodeCall(attendance.claim, (1, END, sig)));
+        vm.prank(user);
+        attendance.claim(1, END, sig);
+        assertFalse(eas.callbackSucceeded());
+        assertEq(attendance.attestationCount(), 1);
+        assertEq(eas.count(), 1);
+    }
 }
