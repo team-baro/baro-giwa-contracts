@@ -38,3 +38,4 @@ No deployment or push is implied by this log.
 | 28 | 2026-10-02 | 2026-11-28 | feat: expose attendance attestation references |
 | 29 | 2026-10-03 | 2026-11-28 | test: reject invalid attendance claims |
 | 30 | 2026-10-06 | 2026-11-28 | test: cover EAS failure rollback |
+| 31 | 2026-10-08 | 2026-11-28 | test: cover attendance time boundaries |

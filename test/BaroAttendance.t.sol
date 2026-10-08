@@ -198,4 +198,38 @@ contract BaroAttendanceTest is Test {
         assertEq(attendance.attestationCount(), 1);
         assertEq(eas.count(), 1);
     }
+
+    function testStartInclusiveEndExclusive() public {
+        bytes memory sig = signature(1, user, END);
+        vm.warp(START - 1);
+        vm.prank(user);
+        vm.expectRevert(BaroAttendance.OutsideSessionWindow.selector);
+        attendance.claim(1, END, sig);
+        vm.warp(START);
+        vm.prank(user);
+        attendance.claim(1, END, sig);
+        address second = address(0xBEEF);
+        sig = signature(1, second, END);
+        vm.warp(END - 1);
+        vm.prank(second);
+        attendance.claim(1, END, sig);
+        address third = address(0xF00D);
+        sig = signature(1, third, END);
+        vm.warp(END);
+        vm.prank(third);
+        vm.expectRevert(BaroAttendance.OutsideSessionWindow.selector);
+        attendance.claim(1, END, sig);
+        assertEq(attendance.attestationCount(), 2);
+    }
+
+    function testFuzzOnlySessionWindowCanIssue(uint64 timestamp) public {
+        vm.warp(timestamp);
+        bytes memory sig = signature(1, user, END);
+        vm.prank(user);
+        if (timestamp < START || timestamp >= END) {
+            vm.expectRevert(BaroAttendance.OutsideSessionWindow.selector);
+        }
+        attendance.claim(1, END, sig);
+        assertEq(attendance.claimed(1, user), timestamp >= START && timestamp < END);
+    }
 }
