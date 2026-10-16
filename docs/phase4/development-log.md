@@ -42,3 +42,4 @@ No deployment or push is implied by this log.
 | 32 | 2026-10-10 | 2026-11-28 | docs: document attendance integration |
 | 33 | 2026-10-12 | 2026-11-28 | feat: add wallet eligibility interface |
 | 34 | 2026-10-14 | 2026-11-28 | feat: validate credential issuers and schemas |
+| 35 | 2026-10-16 | 2026-11-28 | feat: validate credential ownership |

@@ -40,6 +40,7 @@ contract DojangEligibility is IWalletEligibility {
         }
         if (uid == bytes32(0)) return false;
         try EAS.getAttestation(uid) returns (Attestation memory record) {
+            if (user == address(0) || record.recipient != user) return false;
             return record.uid == uid && record.schema == VERIFIED_ADDRESS_SCHEMA
                 && record.attester == ISSUER;
         } catch {
