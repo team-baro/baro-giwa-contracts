@@ -41,6 +41,14 @@ contract DojangEligibility is IWalletEligibility {
         if (uid == bytes32(0)) return false;
         try EAS.getAttestation(uid) returns (Attestation memory record) {
             if (user == address(0) || record.recipient != user) return false;
+            if (
+                record.time == 0 || record.time > block.timestamp || record.revocationTime != 0
+                    || (record.expirationTime != 0 && record.expirationTime <= block.timestamp)
+                    || record.data.length != 32
+            ) return false;
+            // Reject noncanonical ABI booleans without propagating a decode revert.
+            uint256 verifiedWord = abi.decode(record.data, (uint256));
+            if (verifiedWord != 1) return false;
             return record.uid == uid && record.schema == VERIFIED_ADDRESS_SCHEMA
                 && record.attester == ISSUER;
         } catch {
