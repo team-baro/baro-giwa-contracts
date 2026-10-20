@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 import { Test } from "forge-std/Test.sol";
 import { ERC1271WalletMock } from "@openzeppelin/contracts/mocks/ERC1271WalletMock.sol";
 import { BaroAttendance } from "../src/BaroAttendance.sol";
+import { IWalletEligibility } from "../src/interfaces/IWalletEligibility.sol";
 import { IEAS, Attestation } from "../src/interfaces/IEAS.sol";
 import { MockEAS } from "./mocks/MockEAS.sol";
 
@@ -23,7 +24,9 @@ contract BaroAttendanceTest is Test {
         eas = new MockEAS();
         schema = eas.registry()
             .register("uint256 sessionId,uint8 kind,bytes32 metadataHash", address(0), false);
-        attendance = new BaroAttendance(address(this), organizer, eas, schema);
+        attendance = new BaroAttendance(
+            address(this), organizer, eas, schema, IWalletEligibility(address(0))
+        );
         vm.prank(organizer);
         attendance.createSession(1, START, END, 0, META);
         vm.warp(START);
@@ -91,7 +94,9 @@ contract BaroAttendanceTest is Test {
         vm.prank(user);
         vm.expectRevert(BaroAttendance.InvalidClaim.selector);
         attendance.claim(1, END, sig);
-        BaroAttendance other = new BaroAttendance(address(this), organizer, eas, schema);
+        BaroAttendance other = new BaroAttendance(
+            address(this), organizer, eas, schema, IWalletEligibility(address(0))
+        );
         vm.prank(organizer);
         other.createSession(1, START, END, 0, META);
         vm.prank(user);
@@ -120,24 +125,30 @@ contract BaroAttendanceTest is Test {
 
     function testRejectsIncompatibleEASSchemas() public {
         vm.expectRevert(BaroAttendance.InvalidConfiguration.selector);
-        new BaroAttendance(address(this), address(0), eas, schema);
+        new BaroAttendance(address(this), address(0), eas, schema, IWalletEligibility(address(0)));
         vm.expectRevert(BaroAttendance.InvalidConfiguration.selector);
-        new BaroAttendance(address(this), organizer, IEAS(address(123)), schema);
+        new BaroAttendance(
+            address(this), organizer, IEAS(address(123)), schema, IWalletEligibility(address(0))
+        );
         vm.expectRevert(BaroAttendance.InvalidConfiguration.selector);
-        new BaroAttendance(address(this), organizer, eas, bytes32(0));
+        new BaroAttendance(
+            address(this), organizer, eas, bytes32(0), IWalletEligibility(address(0))
+        );
         vm.expectRevert(BaroAttendance.InvalidConfiguration.selector);
-        new BaroAttendance(address(this), organizer, eas, keccak256("unknown"));
+        new BaroAttendance(
+            address(this), organizer, eas, keccak256("unknown"), IWalletEligibility(address(0))
+        );
         bytes32 bad = eas.registry()
             .register("uint256 sessionId,uint8 kind,bytes32 metadataHash", address(1), false);
         vm.expectRevert(BaroAttendance.InvalidConfiguration.selector);
-        new BaroAttendance(address(this), organizer, eas, bad);
+        new BaroAttendance(address(this), organizer, eas, bad, IWalletEligibility(address(0)));
         bad = eas.registry()
             .register("uint256 sessionId,uint8 kind,bytes32 metadataHash", address(0), true);
         vm.expectRevert(BaroAttendance.InvalidConfiguration.selector);
-        new BaroAttendance(address(this), organizer, eas, bad);
+        new BaroAttendance(address(this), organizer, eas, bad, IWalletEligibility(address(0)));
         bad = eas.registry().register("bytes32 other", address(0), false);
         vm.expectRevert(BaroAttendance.InvalidConfiguration.selector);
-        new BaroAttendance(address(this), organizer, eas, bad);
+        new BaroAttendance(address(this), organizer, eas, bad, IWalletEligibility(address(0)));
     }
 
     function testPauseAndRoleGuards() public {

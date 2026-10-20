@@ -6,7 +6,6 @@ import {
 
 import {
     IEAS,
-    ISchemaRegistry,
     SchemaRecord,
     AttestationRequest,
     AttestationRequestData
@@ -18,12 +17,18 @@ import { SignatureChecker } from "@openzeppelin/contracts/utils/cryptography/Sig
 import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
 
+import { IWalletEligibility } from "./interfaces/IWalletEligibility.sol";
+
 /// @title BaroAttendance
 /// @notice Wallet-bound EAS attendance approved by each session's authorized organizer.
 contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGuard, Pausable {
     bytes32 public constant CLAIM_TYPEHASH =
         keccak256("AttendanceClaim(uint256 sessionId,address user,uint256 deadline)");
     error InvalidClaim();
+    error IneligibleWallet();
+    IWalletEligibility public immutable ELIGIBILITY;
+    mapping(uint256 sessionId => bool) public verifiedSessions;
+    event VerifiedSessionConfigured(uint256 indexed sessionId, address indexed verifier);
     error OutsideSessionWindow();
     error AlreadyClaimed();
     mapping(uint256 sessionId => mapping(address user => bool)) public claimed;
@@ -46,10 +51,13 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
     bytes32 public immutable schema;
     string public constant SCHEMA = "uint256 sessionId,uint8 kind,bytes32 metadataHash";
 
-    constructor(address admin, address organizer, IEAS eas_, bytes32 schema_)
-        AccessControlDefaultAdminRules(1 days, admin)
-        EIP712("BaroAttendance", "1")
-    {
+    constructor(
+        address admin,
+        address organizer,
+        IEAS eas_,
+        bytes32 schema_,
+        IWalletEligibility eligibility_
+    ) AccessControlDefaultAdminRules(1 days, admin) EIP712("BaroAttendance", "1") {
         if (organizer == address(0)) revert InvalidConfiguration();
         if (address(eas_).code.length == 0 || schema_ == bytes32(0)) revert InvalidConfiguration();
         SchemaRecord memory record = eas_.getSchemaRegistry().getSchema(schema_);
@@ -57,6 +65,10 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
             record.uid != schema_ || record.resolver != address(0) || record.revocable
                 || keccak256(bytes(record.schema)) != keccak256(bytes(SCHEMA))
         ) revert InvalidConfiguration();
+        if (address(eligibility_) != address(0) && address(eligibility_).code.length == 0) {
+            revert InvalidConfiguration();
+        }
+        ELIGIBILITY = eligibility_;
         eas = eas_;
         schema = schema_;
         _grantRole(ORGANIZER_ROLE, organizer);
@@ -134,6 +146,13 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
         returns (bytes32 uid)
     {
         _validateClaim(sessionId, deadline, signature);
+        if (verifiedSessions[sessionId]) {
+            try ELIGIBILITY.isEligible(msg.sender) returns (bool eligible) {
+                if (!eligible) revert IneligibleWallet();
+            } catch {
+                revert IneligibleWallet();
+            }
+        }
         Session storage session = sessions[sessionId];
         claimed[sessionId][msg.sender] = true;
         uid = eas.attest(
@@ -161,5 +180,19 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
 
     function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
+    }
+
+    /// @notice Create a session whose claims require current Dojang eligibility.
+    function createVerifiedSession(
+        uint256 sessionId,
+        uint64 start,
+        uint64 end,
+        uint8 kind,
+        bytes32 metadataHash
+    ) external onlyRole(ORGANIZER_ROLE) {
+        if (address(ELIGIBILITY) == address(0)) revert InvalidConfiguration();
+        _createSession(sessionId, start, end, kind, metadataHash);
+        verifiedSessions[sessionId] = true;
+        emit VerifiedSessionConfigured(sessionId, address(ELIGIBILITY));
     }
 }

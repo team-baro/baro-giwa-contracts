@@ -44,3 +44,4 @@ No deployment or push is implied by this log.
 | 34 | 2026-10-14 | 2026-11-28 | feat: validate credential issuers and schemas |
 | 35 | 2026-10-16 | 2026-11-28 | feat: validate credential ownership |
 | 36 | 2026-10-18 | 2026-11-28 | feat: reject expired and revoked credentials |
+| 37 | 2026-10-20 | 2026-11-28 | feat: gate verified attendance sessions |
