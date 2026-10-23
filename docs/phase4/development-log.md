@@ -46,3 +46,4 @@ No deployment or push is implied by this log.
 | 36 | 2026-10-18 | 2026-11-28 | feat: reject expired and revoked credentials |
 | 37 | 2026-10-20 | 2026-11-28 | feat: gate verified attendance sessions |
 | 38 | 2026-10-22 | 2026-11-28 | test: cover verified wallet eligibility |
+| 39 | 2026-10-23 | 2026-11-28 | test: cover credential verifier failures |

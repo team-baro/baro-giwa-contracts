@@ -115,4 +115,16 @@ contract DojangEligibilityTest is Test {
         vm.expectRevert(DojangEligibility.InvalidConfiguration.selector);
         new DojangEligibility(eas, scroll, issuer, bytes32(0));
     }
+
+    function testExternalReadFailuresFailClosed() public {
+        scroll.configure(true, false);
+        assertFalse(verifier.isEligible(user));
+        scroll.configure(false, true);
+        assertFalse(verifier.isEligible(user));
+        scroll.configure(false, false);
+        eas.configure(false, true, false);
+        assertFalse(verifier.isEligible(user));
+        eas.configure(false, false, false);
+        assertTrue(verifier.isEligible(user));
+    }
 }

@@ -7,7 +7,7 @@ import { IWalletEligibility } from "../src/interfaces/IWalletEligibility.sol";
 import { IEAS, Attestation } from "../src/interfaces/IEAS.sol";
 import { MockEAS } from "./mocks/MockEAS.sol";
 
-contract BaroAttendanceTest is Test {
+abstract contract BaroAttendanceFixture is Test {
     BaroAttendance internal attendance;
     MockEAS internal eas;
     bytes32 internal schema;
@@ -41,7 +41,9 @@ contract BaroAttendanceTest is Test {
             vm.sign(KEY, attendance.hashClaim(sessionId, recipient, deadline));
         return abi.encodePacked(r, s, v);
     }
+}
 
+contract BaroAttendanceTest is BaroAttendanceFixture {
     function testIssuesWalletBoundAttestation() public {
         bytes memory sig = signature(1, user, END);
         vm.prank(user);
