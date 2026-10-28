@@ -48,3 +48,4 @@ No deployment or push is implied by this log.
 | 38 | 2026-10-22 | 2026-11-28 | test: cover verified wallet eligibility |
 | 39 | 2026-10-23 | 2026-11-28 | test: cover credential verifier failures |
 | 40 | 2026-10-26 | 2026-11-28 | docs: document credential trust assumptions |
+| 41 | 2026-10-28 | 2026-11-28 | feat: add performance campaign escrow |
