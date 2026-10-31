@@ -45,4 +45,52 @@ contract BaroPerformanceEscrow is
     function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
+
+    struct Terms {
+        address channel;
+        address token;
+        address verifier;
+        IWalletEligibility eligibility;
+        uint128 budget;
+        uint128 unitReward;
+        uint64 start;
+        uint64 end;
+        bytes32 conditionHash;
+    }
+
+    struct Campaign {
+        address owner;
+        Terms terms;
+        uint256 remainingBudget;
+        uint256 paidBudget;
+    }
+    mapping(uint256 campaignId => Campaign) private _campaigns;
+    uint256 public campaignCount;
+    event CampaignCreated(
+        uint256 indexed campaignId,
+        address indexed owner,
+        address indexed channel,
+        bytes32 conditionHash
+    );
+
+    function getCampaign(uint256 campaignId) external view returns (Campaign memory) {
+        return _campaign(campaignId);
+    }
+
+    function _campaign(uint256 campaignId) internal view returns (Campaign storage campaign) {
+        campaign = _campaigns[campaignId];
+        if (campaign.owner == address(0)) revert InvalidCampaign();
+    }
+
+    function _validateTerms(Terms calldata terms) internal view {
+        if (
+            terms.channel == address(0) || terms.channel == address(this)
+                || !hasRole(VERIFIER_ROLE, terms.verifier) || terms.budget == 0
+                || terms.unitReward == 0 || terms.unitReward > terms.budget
+                || terms.start < block.timestamp || terms.end <= terms.start
+                || terms.conditionHash == bytes32(0)
+                || (address(terms.eligibility) != address(0)
+                    && address(terms.eligibility).code.length == 0)
+        ) revert InvalidConfiguration();
+    }
 }
