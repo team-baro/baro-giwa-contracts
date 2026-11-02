@@ -36,6 +36,7 @@ contract BaroPerformanceEscrow is
             revert InvalidConfiguration();
         }
         _grantRole(VERIFIER_ROLE, verifier);
+        supportedTokens[address(0)] = true;
     }
 
     function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -92,5 +93,50 @@ contract BaroPerformanceEscrow is
                 || (address(terms.eligibility) != address(0)
                     && address(terms.eligibility).code.length == 0)
         ) revert InvalidConfiguration();
+    }
+
+    mapping(address token => uint256) public totalLiability;
+    mapping(address token => bool) public supportedTokens;
+    event TokenSupportUpdated(address indexed token, bool supported);
+    error InvalidFunding();
+    error UnsupportedToken();
+    error UnsupportedTokenBehavior();
+
+    function setRewardTokenSupported(address token, bool supported)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (token != address(0) && token.code.length == 0) revert InvalidConfiguration();
+        supportedTokens[token] = supported;
+        emit TokenSupportUpdated(token, supported);
+    }
+
+    function createCampaign(Terms calldata terms)
+        external
+        payable
+        nonReentrant
+        whenNotPaused
+        onlyRole(CREATOR_ROLE)
+        returns (uint256 campaignId)
+    {
+        _validateTerms(terms);
+        if (!supportedTokens[terms.token]) revert UnsupportedToken();
+        if (terms.token == address(0)) {
+            if (msg.value != terms.budget) revert InvalidFunding();
+        } else {
+            if (msg.value != 0) revert InvalidFunding();
+            IERC20 token = IERC20(terms.token);
+            uint256 beforeBalance = token.balanceOf(address(this));
+            token.safeTransferFrom(msg.sender, address(this), terms.budget);
+            if (token.balanceOf(address(this)) - beforeBalance != terms.budget) {
+                revert UnsupportedTokenBehavior();
+            }
+        }
+        campaignId = ++campaignCount;
+        _campaigns[campaignId] = Campaign({
+            owner: msg.sender, terms: terms, remainingBudget: terms.budget, paidBudget: 0
+        });
+        totalLiability[terms.token] += terms.budget;
+        emit CampaignCreated(campaignId, msg.sender, terms.channel, terms.conditionHash);
     }
 }
