@@ -139,4 +139,65 @@ contract BaroPerformanceEscrow is
         totalLiability[terms.token] += terms.budget;
         emit CampaignCreated(campaignId, msg.sender, terms.channel, terms.conditionHash);
     }
+
+    struct ActionReceipt {
+        uint256 campaignId;
+        address user;
+        address channel;
+        bytes32 evidenceHash;
+        uint64 actionAt;
+        uint256 deadline;
+    }
+    bytes32 public constant ACTION_TYPEHASH = keccak256(
+        "ActionReceipt(uint256 campaignId,address user,address channel,bytes32 evidenceHash,uint64 actionAt,uint256 deadline)"
+    );
+    error InvalidReceipt();
+    error OutsideCampaignWindow();
+    error IneligibleWallet();
+
+    function hashReceipt(ActionReceipt calldata receipt) public view returns (bytes32) {
+        return _hashTypedDataV4(
+            keccak256(
+                abi.encode(
+                    ACTION_TYPEHASH,
+                    receipt.campaignId,
+                    receipt.user,
+                    receipt.channel,
+                    receipt.evidenceHash,
+                    receipt.actionAt,
+                    receipt.deadline
+                )
+            )
+        );
+    }
+
+    function _validateReceipt(
+        Campaign storage campaign,
+        ActionReceipt calldata receipt,
+        bytes calldata signature
+    ) internal view {
+        Terms storage terms = campaign.terms;
+        if (block.timestamp < terms.start || block.timestamp >= terms.end) {
+            revert OutsideCampaignWindow();
+        }
+        if (
+            receipt.user == address(0) || receipt.evidenceHash == bytes32(0)
+                || receipt.actionAt < terms.start || receipt.actionAt >= terms.end
+                || receipt.actionAt > block.timestamp || receipt.deadline < block.timestamp
+                || receipt.deadline > terms.end
+        ) revert InvalidReceipt();
+        if (
+            !hasRole(VERIFIER_ROLE, terms.verifier)
+                || !SignatureChecker.isValidSignatureNow(
+                    terms.verifier, hashReceipt(receipt), signature
+                )
+        ) revert InvalidReceipt();
+        if (address(terms.eligibility) != address(0)) {
+            try terms.eligibility.isEligible(receipt.user) returns (bool eligible) {
+                if (!eligible) revert IneligibleWallet();
+            } catch {
+                revert IneligibleWallet();
+            }
+        }
+    }
 }

@@ -51,3 +51,4 @@ No deployment or push is implied by this log.
 | 41 | 2026-10-28 | 2026-11-28 | feat: add performance campaign escrow |
 | 42 | 2026-10-31 | 2026-11-28 | feat: configure campaign payout terms |
 | 43 | 2026-11-02 | 2026-11-28 | feat: fund performance campaign budgets |
+| 44 | 2026-11-04 | 2026-11-28 | feat: verify qualified action receipts |
