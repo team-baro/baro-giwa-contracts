@@ -177,6 +177,7 @@ contract BaroPerformanceEscrow is
         bytes calldata signature
     ) internal view {
         Terms storage terms = campaign.terms;
+        if (receipt.channel != terms.channel) revert InvalidReceipt();
         if (block.timestamp < terms.start || block.timestamp >= terms.end) {
             revert OutsideCampaignWindow();
         }
@@ -200,4 +201,12 @@ contract BaroPerformanceEscrow is
             }
         }
     }
+
+    event ChannelPaid(
+        uint256 indexed campaignId,
+        address indexed user,
+        address indexed channel,
+        bytes32 evidenceHash,
+        uint256 amount
+    );
 }

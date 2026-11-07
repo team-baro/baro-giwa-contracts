@@ -52,3 +52,4 @@ No deployment or push is implied by this log.
 | 42 | 2026-10-31 | 2026-11-28 | feat: configure campaign payout terms |
 | 43 | 2026-11-02 | 2026-11-28 | feat: fund performance campaign budgets |
 | 44 | 2026-11-04 | 2026-11-28 | feat: verify qualified action receipts |
+| 45 | 2026-11-07 | 2026-11-28 | feat: bind qualified actions to channels |
