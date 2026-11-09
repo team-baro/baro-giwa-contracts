@@ -209,4 +209,22 @@ contract BaroPerformanceEscrow is
         bytes32 evidenceHash,
         uint256 amount
     );
+
+    mapping(uint256 campaignId => mapping(address user => bool)) public rewardedUsers;
+    mapping(bytes32 evidenceHash => bool) public usedEvidence;
+    error AlreadyRewarded();
+    error InsufficientBudget();
+
+    function _consumeReceipt(Campaign storage campaign, ActionReceipt calldata receipt) internal {
+        if (rewardedUsers[receipt.campaignId][receipt.user] || usedEvidence[receipt.evidenceHash]) {
+            revert AlreadyRewarded();
+        }
+        uint256 amount = campaign.terms.unitReward;
+        if (campaign.remainingBudget < amount) revert InsufficientBudget();
+        rewardedUsers[receipt.campaignId][receipt.user] = true;
+        usedEvidence[receipt.evidenceHash] = true;
+        campaign.remainingBudget -= amount;
+        campaign.paidBudget += amount;
+        totalLiability[campaign.terms.token] -= amount;
+    }
 }
