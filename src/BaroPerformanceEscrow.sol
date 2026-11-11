@@ -227,4 +227,36 @@ contract BaroPerformanceEscrow is
         campaign.paidBudget += amount;
         totalLiability[campaign.terms.token] -= amount;
     }
+
+    /// @notice Anyone may relay an approval; the beneficiary is fixed in the funded campaign.
+    function settle(ActionReceipt calldata receipt, bytes calldata signature)
+        external
+        nonReentrant
+        whenNotPaused
+    {
+        Campaign storage campaign = _campaign(receipt.campaignId);
+        _validateReceipt(campaign, receipt, signature);
+        _consumeReceipt(campaign, receipt);
+        _pay(campaign.terms.token, campaign.terms.channel, campaign.terms.unitReward);
+        emit ChannelPaid(
+            receipt.campaignId,
+            receipt.user,
+            campaign.terms.channel,
+            receipt.evidenceHash,
+            campaign.terms.unitReward
+        );
+    }
+
+    function _pay(address token, address recipient, uint256 amount) internal {
+        if (token == address(0)) {
+            payable(recipient).sendValue(amount);
+        } else {
+            IERC20 erc20 = IERC20(token);
+            uint256 beforeBalance = erc20.balanceOf(recipient);
+            erc20.safeTransfer(recipient, amount);
+            if (erc20.balanceOf(recipient) - beforeBalance != amount) {
+                revert UnsupportedTokenBehavior();
+            }
+        }
+    }
 }

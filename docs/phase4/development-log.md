@@ -54,3 +54,4 @@ No deployment or push is implied by this log.
 | 44 | 2026-11-04 | 2026-11-28 | feat: verify qualified action receipts |
 | 45 | 2026-11-07 | 2026-11-28 | feat: bind qualified actions to channels |
 | 46 | 2026-11-09 | 2026-11-28 | feat: prevent duplicate action rewards |
+| 47 | 2026-11-11 | 2026-11-28 | feat: settle qualified channel payouts |
