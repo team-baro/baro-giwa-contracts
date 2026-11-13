@@ -55,3 +55,4 @@ No deployment or push is implied by this log.
 | 45 | 2026-11-07 | 2026-11-28 | feat: bind qualified actions to channels |
 | 46 | 2026-11-09 | 2026-11-28 | feat: prevent duplicate action rewards |
 | 47 | 2026-11-11 | 2026-11-28 | feat: settle qualified channel payouts |
+| 48 | 2026-11-13 | 2026-11-28 | feat: refund expired campaign balances |

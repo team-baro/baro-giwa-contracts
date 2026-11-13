@@ -259,4 +259,21 @@ contract BaroPerformanceEscrow is
             }
         }
     }
+
+    event CampaignRefunded(uint256 indexed campaignId, address indexed owner, uint256 amount);
+    error RefundUnavailable();
+
+    /// @notice Only the funding owner can refund after the exclusive campaign end, even while paused.
+    function refund(uint256 campaignId) external nonReentrant {
+        Campaign storage campaign = _campaign(campaignId);
+        if (
+            msg.sender != campaign.owner || block.timestamp < campaign.terms.end
+                || campaign.remainingBudget == 0
+        ) revert RefundUnavailable();
+        uint256 amount = campaign.remainingBudget;
+        campaign.remainingBudget = 0;
+        totalLiability[campaign.terms.token] -= amount;
+        _pay(campaign.terms.token, campaign.owner, amount);
+        emit CampaignRefunded(campaignId, campaign.owner, amount);
+    }
 }
