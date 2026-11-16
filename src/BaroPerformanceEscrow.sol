@@ -86,8 +86,8 @@ contract BaroPerformanceEscrow is
     function _validateTerms(Terms calldata terms) internal view {
         if (
             terms.channel == address(0) || terms.channel == address(this)
-                || !hasRole(VERIFIER_ROLE, terms.verifier) || terms.budget == 0
-                || terms.unitReward == 0 || terms.unitReward > terms.budget
+                || terms.verifier == address(0) || !hasRole(VERIFIER_ROLE, terms.verifier)
+                || terms.budget == 0 || terms.unitReward == 0 || terms.unitReward > terms.budget
                 || terms.start < block.timestamp || terms.end <= terms.start
                 || terms.conditionHash == bytes32(0)
                 || (address(terms.eligibility) != address(0)

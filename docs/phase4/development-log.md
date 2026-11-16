@@ -56,3 +56,4 @@ No deployment or push is implied by this log.
 | 46 | 2026-11-09 | 2026-11-28 | feat: prevent duplicate action rewards |
 | 47 | 2026-11-11 | 2026-11-28 | feat: settle qualified channel payouts |
 | 48 | 2026-11-13 | 2026-11-28 | feat: refund expired campaign balances |
+| 49 | 2026-11-16 | 2026-11-28 | test: enforce performance escrow invariants |
