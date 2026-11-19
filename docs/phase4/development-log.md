@@ -57,3 +57,4 @@ No deployment or push is implied by this log.
 | 47 | 2026-11-11 | 2026-11-28 | feat: settle qualified channel payouts |
 | 48 | 2026-11-13 | 2026-11-28 | feat: refund expired campaign balances |
 | 49 | 2026-11-16 | 2026-11-28 | test: enforce performance escrow invariants |
+| 50 | 2026-11-19 | 2026-11-28 | docs: document performance verification model |
