@@ -1,0 +1,65 @@
+{
+  "notice": "Replace domain addresses with verified deployments. Sign only after offchain verification.",
+  "attendance": {
+    "domain": {
+      "name": "BaroAttendance",
+      "version": "1",
+      "chainId": 91342,
+      "verifyingContract": "REPLACE_WITH_DEPLOYED_ATTENDANCE_ADDRESS"
+    },
+    "primaryType": "AttendanceClaim",
+    "types": {
+      "AttendanceClaim": [
+        {
+          "name": "sessionId",
+          "type": "uint256"
+        },
+        {
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ]
+    }
+  },
+  "performance": {
+    "domain": {
+      "name": "BaroPerformanceEscrow",
+      "version": "1",
+      "chainId": 91342,
+      "verifyingContract": "REPLACE_WITH_DEPLOYED_PERFORMANCE_ADDRESS"
+    },
+    "primaryType": "ActionReceipt",
+    "types": {
+      "ActionReceipt": [
+        {
+          "name": "campaignId",
+          "type": "uint256"
+        },
+        {
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "name": "channel",
+          "type": "address"
+        },
+        {
+          "name": "evidenceHash",
+          "type": "bytes32"
+        },
+        {
+          "name": "actionAt",
+          "type": "uint64"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ]
+    }
+  }
+}
