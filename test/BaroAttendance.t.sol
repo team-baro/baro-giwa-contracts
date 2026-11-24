@@ -236,6 +236,7 @@ contract BaroAttendanceTest is BaroAttendanceFixture {
     }
 
     function testFuzzOnlySessionWindowCanIssue(uint64 timestamp) public {
+        timestamp = uint64(bound(timestamp, START - 100, END + 100));
         vm.warp(timestamp);
         bytes memory sig = signature(1, user, END);
         vm.prank(user);

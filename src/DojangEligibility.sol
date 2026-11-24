@@ -25,7 +25,7 @@ contract DojangEligibility is IWalletEligibility {
     }
 
     function isEligible(address user) external view returns (bool) {
-        bytes32 uid;
+        bytes32 uid = bytes32(0);
         try SCROLL.isVerified(user, UPBIT_KOREA_ID) returns (bool verified) {
             if (!verified) return false;
         } catch {

@@ -139,6 +139,9 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
     }
 
     /// @notice Recipient claims an irrevocable, zero-fee EAS attestation during the session.
+    /// @dev Claim/count effects precede EAS; the returned UID must be stored afterward.
+    ///      nonReentrant protects this final UID write; external-call failure rolls back all effects.
+    // slither-disable-next-line reentrancy-benign
     function claim(uint256 sessionId, uint256 deadline, bytes calldata signature)
         external
         nonReentrant
@@ -155,6 +158,7 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
         }
         Session storage session = sessions[sessionId];
         claimed[sessionId][msg.sender] = true;
+        attestationCount += 1;
         uid = eas.attest(
             AttestationRequest({
                 schema: schema,
@@ -170,7 +174,6 @@ contract BaroAttendance is AccessControlDefaultAdminRules, EIP712, ReentrancyGua
         );
         if (uid == bytes32(0)) revert InvalidClaim();
         attestationUIDs[sessionId][msg.sender] = uid;
-        attestationCount += 1;
         emit AttendanceAttested(sessionId, msg.sender, uid);
     }
 
