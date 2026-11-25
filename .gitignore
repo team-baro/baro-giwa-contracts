@@ -4,3 +4,5 @@ out/
 broadcast/
 coverage/
 lcov.info
+
+__pycache__/

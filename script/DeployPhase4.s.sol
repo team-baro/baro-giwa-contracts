@@ -76,9 +76,8 @@ contract DeployPhase4 is Script {
                 && keccak256(bytes(verified.schema)) == keccak256("bool isVerified"),
             "Wrong Dojang schema"
         );
-        deployed.attendanceSchema = keccak256(
-            abi.encodePacked(ATTENDANCE_SCHEMA, address(0), false)
-        );
+        deployed.attendanceSchema =
+            keccak256(abi.encodePacked(ATTENDANCE_SCHEMA, address(0), false));
         vm.startBroadcast(cfg.deployer);
         if (registry.getSchema(deployed.attendanceSchema).uid == bytes32(0)) {
             require(

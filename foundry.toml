@@ -19,3 +19,11 @@ exclude_lints = ["asm-keccak256"]
 
 [rpc_endpoints]
 giwa_sepolia = "${GIWA_SEPOLIA_RPC_URL}"
+
+[profile.default.fuzz]
+runs = 512
+
+[profile.default.invariant]
+runs = 128
+depth = 64
+fail_on_revert = true

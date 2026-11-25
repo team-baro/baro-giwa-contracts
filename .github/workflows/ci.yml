@@ -2,8 +2,14 @@ name: contracts
 
 on:
   push:
-    branches: [main]
+    branches: [master, main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      run_fork_tests:
+        description: "Run the read-only GIWA fork integration test"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -24,6 +30,10 @@ jobs:
       - run: forge build --sizes
       - run: forge test -vvv
       - run: scripts/check-coverage.sh
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test/tooling -v
+      - run: python3 tools/export_integration.py --check
+      - if: github.event_name == 'workflow_dispatch' && inputs.run_fork_tests
+        run: BARO_RUN_FORK_TESTS=true forge test --match-contract GIWAPhase4ForkTest -vv
 
   slither:
     runs-on: ubuntu-latest
