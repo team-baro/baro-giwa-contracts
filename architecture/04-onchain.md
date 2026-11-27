@@ -1,5 +1,10 @@
 # 04. GIWA 온체인 모듈
 
+> Phase 4 update (2026-11-28): new modules are implemented and locally tested separately from this
+> original pilot design. See [Phase 4 operations](../docs/phase4/operations.md) and
+> [scope](../docs/phase4/scope.md). This update does not claim a public deployment.
+
+
 > **Status:** MVP / Testnet design — deployment evidence is recorded separately
 > **Last reviewed:** 2026-07-30
 
