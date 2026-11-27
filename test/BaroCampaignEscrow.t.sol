@@ -482,4 +482,19 @@ contract BaroCampaignEscrowTest is Test {
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(signerKey, digest);
         return abi.encodePacked(r, s, v);
     }
+
+    function testBoundedGasClaimCreditsHealthyReputation() external {
+        uint256 campaignId = _createNativeCampaign(block.timestamp, block.timestamp + 1 days);
+        BaroCampaignEscrow.QuestClaim memory claim = _claim(campaignId, address(0), 1 ether, 501);
+        bytes memory signature = _sign(claim, OPERATOR_KEY);
+        vm.prank(user);
+        (bool success,) = address(escrow).call{ gas: 400_000 }(
+            abi.encodeCall(escrow.claimReward, (claim, operator, signature))
+        );
+        assertTrue(success);
+        assertEq(user.balance, 1 ether);
+        assertFalse(escrow.pendingReputationUpdates(campaignId, claim.questId, user));
+        (uint64 points,,,,,) = reputation.reputations(user);
+        assertEq(points, 10);
+    }
 }

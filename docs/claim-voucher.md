@@ -29,3 +29,9 @@ that operator's outstanding vouchers. Operators may be EOAs or ERC-1271 smart-co
 
 Successful reward payment marks the claim as final. If the reputation contract is unavailable, the
 escrow records a pending reputation update that anyone can retry after service is restored.
+
+The optional SBT call is limited to REPUTATION_UPDATE_GAS_LIMIT (200,000 gas). The escrow also
+requires 50,000 gas of post-call reserve at that boundary. Use transaction gas estimation;
+InsufficientReputationGas means the entire claim rolled back and can be retried with more gas.
+A gas-exhausting SBT does not consume the reserved bookkeeping gas; reward payment finalizes
+and the reputation update can be retried separately with its own gas budget.

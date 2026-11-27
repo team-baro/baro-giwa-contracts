@@ -138,4 +138,24 @@ contract DojangEligibilityTest is Test {
         );
         assertFalse(verifier.isEligible(user));
     }
+
+    function testUncheckedReadIsOnlyCallableByAdapter() public {
+        vm.expectRevert(DojangEligibility.OnlySelf.selector);
+        verifier.readEligibility(user);
+    }
+
+    function testNoncanonicalVerificationBoolFailsClosed() public {
+        vm.mockCall(
+            address(scroll),
+            abi.encodeCall(scroll.isVerified, (user, verifier.UPBIT_KOREA_ID())),
+            abi.encode(uint256(2))
+        );
+        assertFalse(verifier.isEligible(user));
+    }
+
+    function testFuzzTruncatedEASResponseFailsClosed(bytes calldata returned) public {
+        vm.assume(returned.length < 32);
+        vm.mockCall(address(eas), abi.encodeCall(eas.getAttestation, (UID)), returned);
+        assertFalse(verifier.isEligible(user));
+    }
 }

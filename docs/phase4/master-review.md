@@ -1,5 +1,8 @@
 # Master pre-push review
 
+> Historical QA snapshot before the later date correction and review fixes.
+> Current follow-up: [review-fixes.md](review-fixes.md).
+
 Date: 2026-11-28 (Asia/Seoul). Target: direct `origin/master`, authorized by the maintainer, no PR.
 This record captures validation before that push. It does not assert a public contract deployment.
 The original 56 allocation commits remain intact. Remote dependency update `2eaeee3` is preserved by a merge.

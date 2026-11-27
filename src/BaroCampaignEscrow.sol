@@ -56,6 +56,12 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
     /// @notice Timelock between scheduling and executing a reputation SBT swap.
     uint64 public constant REPUTATION_UPDATE_DELAY = 1 days;
 
+    /// @notice Maximum gas used by the optional reputation update during reward delivery.
+    uint256 public constant REPUTATION_UPDATE_GAS_LIMIT = 200_000;
+
+    /// @dev Reserve for recording a deferred update, claim event and reentrancy guard cleanup.
+    uint256 private constant REPUTATION_FINISH_GAS_RESERVE = 50_000;
+
     /// @notice EIP-712 struct hash for {QuestClaim}. Must stay byte-identical to the
     ///         type string the off-chain signer uses, or every signature fails to verify.
     bytes32 public constant QUEST_CLAIM_TYPEHASH = keccak256(
@@ -132,6 +138,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
     error CampaignOwnerCancelled();
     error NoPendingReputationUpdate();
     error ReputationUpdateNotReady();
+    error InsufficientReputationGas();
     error ExcessBalanceExceeded();
 
     /*//////////////////////////////////////////////////////////////
@@ -443,11 +450,17 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
             _transferExactERC20(campaign.rewardToken, claim.user, claim.amount);
         }
 
+        // Do not make insufficient gas a successful shortcut around reputation: gas estimation
+        // must fund the bounded call and its failure bookkeeping, even when the SBT is healthy.
+        if (gasleft() < REPUTATION_UPDATE_GAS_LIMIT + REPUTATION_FINISH_GAS_RESERVE) {
+            revert InsufficientReputationGas();
+        }
+
         // Interactions: credit reputation. A failing SBT must never block a payout the user
         // has already earned, so the failure is recorded for {retryReputationUpdate} instead.
         // claimReward is nonReentrant; only the deferred-retry marker is written in the catch path.
         // slither-disable-next-line reentrancy-benign
-        try reputationSbt.recordQuestCompletion(
+        try reputationSbt.recordQuestCompletion{ gas: REPUTATION_UPDATE_GAS_LIMIT }(
             claim.user, claim.campaignId, claim.questId, QUEST_COMPLETION_POINTS
         ) { }
         catch {

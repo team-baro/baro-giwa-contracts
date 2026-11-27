@@ -1,0 +1,355 @@
+{
+  "policy": "Historical AuthorDate and CommitterDate are retrospective allocation dates requested by the maintainer. Actual implementation was on 2026-11-28 KST. This preserves original pre-alignment commit creation timestamps.",
+  "base_commit_unchanged": "fa0143e3909c0967bbf0fa43ab6655729eccaac3",
+  "pre_alignment_head": "d6b9801f15610d8203a18a56733ad9ffb39f3f00",
+  "commits": [
+    {
+      "original_commit": "baa897491ff4dcf68495aeb308d5a3e2e6c4b7fc",
+      "author_date": "2026-08-10T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:10+09:00",
+      "subject": "docs: define phase four contract scope"
+    },
+    {
+      "original_commit": "b07f637b55374645103e1ea44199d5d8e5b8e354",
+      "author_date": "2026-08-11T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:10+09:00",
+      "subject": "docs: define index snapshot format"
+    },
+    {
+      "original_commit": "6a1e4d38c1b9465be456fea16d2203d782429a14",
+      "author_date": "2026-08-12T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:10+09:00",
+      "subject": "docs: define daily publication rules"
+    },
+    {
+      "original_commit": "1723a065b26763b57eb50914979c879811c20f1c",
+      "author_date": "2026-08-15T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:10+09:00",
+      "subject": "docs: define attendance attestation lifecycle"
+    },
+    {
+      "original_commit": "24667b757b34417bdf0a89d98c7ec3da8e006b86",
+      "author_date": "2026-08-16T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:10+09:00",
+      "subject": "docs: define verified wallet eligibility"
+    },
+    {
+      "original_commit": "625337d3c949e7efadee248d92af34a577f80d42",
+      "author_date": "2026-08-17T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:10+09:00",
+      "subject": "docs: define performance payout model"
+    },
+    {
+      "original_commit": "215a1c5336f1c3ea94f25bac8e6ddb3430a7d153",
+      "author_date": "2026-08-18T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:41+09:00",
+      "subject": "feat: add index oracle storage"
+    },
+    {
+      "original_commit": "2c6170156024c4c45aa76027cadde0f932f6a75d",
+      "author_date": "2026-08-19T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:41+09:00",
+      "subject": "feat: add index publisher authorization"
+    },
+    {
+      "original_commit": "cde3fdac061f74eadb4ac4d4064ecb42b4dca0c7",
+      "author_date": "2026-08-22T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:41+09:00",
+      "subject": "feat: publish daily index snapshots"
+    },
+    {
+      "original_commit": "9c61d39326bb2d1d4e645ea238fbc064916559b5",
+      "author_date": "2026-08-24T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:42+09:00",
+      "subject": "feat: enforce current day publication"
+    },
+    {
+      "original_commit": "52124737830d3a44881439b100260a2c108d87d2",
+      "author_date": "2026-08-27T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:42+09:00",
+      "subject": "feat: reject duplicate daily snapshots"
+    },
+    {
+      "original_commit": "d9982250e160471989c41c3a4cfaf70b1790c6d1",
+      "author_date": "2026-08-28T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:42+09:00",
+      "subject": "feat: validate index values and commitments"
+    },
+    {
+      "original_commit": "76db95d2472bcdd0c6fbab0fff89fbce0aaa35af",
+      "author_date": "2026-08-30T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:42+09:00",
+      "subject": "feat: add index history queries"
+    },
+    {
+      "original_commit": "548595d9eab79b4c366bfb9894edd997161b7c66",
+      "author_date": "2026-09-01T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:45:42+09:00",
+      "subject": "feat: verify project index proofs"
+    },
+    {
+      "original_commit": "f8fe4836a12bee8f62181a38a009579b9aaac371",
+      "author_date": "2026-09-03T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:46:32+09:00",
+      "subject": "test: cover daily publication boundaries"
+    },
+    {
+      "original_commit": "570067e8e7491f653f8b05e5e4dec2b59ffc5866",
+      "author_date": "2026-09-05T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:46:33+09:00",
+      "subject": "test: fuzz index snapshot validation"
+    },
+    {
+      "original_commit": "3534d55ef5bc6b8f5c35929e4dcebfe8721dfcdb",
+      "author_date": "2026-09-08T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:46:35+09:00",
+      "subject": "test: enforce snapshot immutability"
+    },
+    {
+      "original_commit": "671757b983f367a635e9fa76f97fbe714200f359",
+      "author_date": "2026-09-11T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:47:07+09:00",
+      "subject": "feat: add index publication tooling"
+    },
+    {
+      "original_commit": "a8ba080b1b05d489fd664c7b525f1639fd10852a",
+      "author_date": "2026-09-13T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:48:23+09:00",
+      "subject": "test: cover publisher retry behavior"
+    },
+    {
+      "original_commit": "a104dffbe664e4efeb82503dd7a3e1f794834825",
+      "author_date": "2026-09-15T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:48:23+09:00",
+      "subject": "docs: document index publication operations"
+    },
+    {
+      "original_commit": "c83f859d48c101f914fee3ff6f2bfb1abb61ee2a",
+      "author_date": "2026-09-18T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:23+09:00",
+      "subject": "feat: add attendance session registry"
+    },
+    {
+      "original_commit": "9b00f7c21e6a81aa323ea4e6b9bd75e2d7b838ad",
+      "author_date": "2026-09-19T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:23+09:00",
+      "subject": "feat: configure attendance session windows"
+    },
+    {
+      "original_commit": "42267c2f53f9b83952576d6a4ba42e0c3e8b1f32",
+      "author_date": "2026-09-20T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:23+09:00",
+      "subject": "feat: add EAS attestation adapter"
+    },
+    {
+      "original_commit": "a2e1346f20a58df7e65e9051be1d1855986df353",
+      "author_date": "2026-09-22T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:23+09:00",
+      "subject": "feat: verify attendance claim signatures"
+    },
+    {
+      "original_commit": "c26e70d84de040d268bba9647199db942bc57273",
+      "author_date": "2026-09-24T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:46+09:00",
+      "subject": "feat: enforce attendance claim windows"
+    },
+    {
+      "original_commit": "664b04464d6d6462e83c8a98cafa8aa8e2159e31",
+      "author_date": "2026-09-27T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:46+09:00",
+      "subject": "feat: prevent duplicate attendance claims"
+    },
+    {
+      "original_commit": "6ce5b4011277690600358af8116e9bd327a7e4e6",
+      "author_date": "2026-09-30T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:46+09:00",
+      "subject": "feat: issue attendance attestations"
+    },
+    {
+      "original_commit": "4aaf817c1feccf3ddbedd71409be53b03fbc00e0",
+      "author_date": "2026-10-02T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:49:46+09:00",
+      "subject": "feat: expose attendance attestation references"
+    },
+    {
+      "original_commit": "8f1a5bf406ac6065d237ed731f967b5bf00e7baa",
+      "author_date": "2026-10-03T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:50:53+09:00",
+      "subject": "test: reject invalid attendance claims"
+    },
+    {
+      "original_commit": "df44bc40d05f72e995e45d968f85fa2d40113303",
+      "author_date": "2026-10-06T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:51:24+09:00",
+      "subject": "test: cover EAS failure rollback"
+    },
+    {
+      "original_commit": "9151dcb8262579f87a4097579aee933c31b5c9a3",
+      "author_date": "2026-10-08T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:51:26+09:00",
+      "subject": "test: cover attendance time boundaries"
+    },
+    {
+      "original_commit": "34709f27798d8a619b25b0c786014315f6b78749",
+      "author_date": "2026-10-10T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:51:26+09:00",
+      "subject": "docs: document attendance integration"
+    },
+    {
+      "original_commit": "7013fbb5a24ecfedd65a769b15fc349af2d8c517",
+      "author_date": "2026-10-12T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:52:11+09:00",
+      "subject": "feat: add wallet eligibility interface"
+    },
+    {
+      "original_commit": "089b45d154d7ce09faaa5accbfd4a5dea73ae5c0",
+      "author_date": "2026-10-14T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:52:11+09:00",
+      "subject": "feat: validate credential issuers and schemas"
+    },
+    {
+      "original_commit": "ceadc9189571012ad2644730b3b953f1e762d36f",
+      "author_date": "2026-10-16T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:52:11+09:00",
+      "subject": "feat: validate credential ownership"
+    },
+    {
+      "original_commit": "1b347eb3946a5c1147b144a3ee8388a7b67f1aa6",
+      "author_date": "2026-10-18T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:52:11+09:00",
+      "subject": "feat: reject expired and revoked credentials"
+    },
+    {
+      "original_commit": "9bdb3894cf395e853343898d14317bac2b904e39",
+      "author_date": "2026-10-20T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:52:13+09:00",
+      "subject": "feat: gate verified attendance sessions"
+    },
+    {
+      "original_commit": "1f9ee3e36472dfc6054af90bd6042ae8fcb4c317",
+      "author_date": "2026-10-22T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:53:02+09:00",
+      "subject": "test: cover verified wallet eligibility"
+    },
+    {
+      "original_commit": "443b546633a0084581c35b247187e3a3fe7da56a",
+      "author_date": "2026-10-23T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:53:29+09:00",
+      "subject": "test: cover credential verifier failures"
+    },
+    {
+      "original_commit": "4af303d76d118e535494d2414c19a4f24fc71712",
+      "author_date": "2026-10-26T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:53:29+09:00",
+      "subject": "docs: document credential trust assumptions"
+    },
+    {
+      "original_commit": "0d8e280de90b37bd7f02e00f6363223b4c28397f",
+      "author_date": "2026-10-28T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:43+09:00",
+      "subject": "feat: add performance campaign escrow"
+    },
+    {
+      "original_commit": "d378c64a81b4a99d9f5384a9e5e70156df6b3125",
+      "author_date": "2026-10-31T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:43+09:00",
+      "subject": "feat: configure campaign payout terms"
+    },
+    {
+      "original_commit": "a30d006e4f2032d17f2f63e644d1c53560ed46db",
+      "author_date": "2026-11-02T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:43+09:00",
+      "subject": "feat: fund performance campaign budgets"
+    },
+    {
+      "original_commit": "1fa80e1c3baa112d9a25924c6a035f4317a30e28",
+      "author_date": "2026-11-04T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:43+09:00",
+      "subject": "feat: verify qualified action receipts"
+    },
+    {
+      "original_commit": "e9e36e90b75ce7ce1d19ba415ea6b466f13222de",
+      "author_date": "2026-11-07T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:44+09:00",
+      "subject": "feat: bind qualified actions to channels"
+    },
+    {
+      "original_commit": "5adbb2795dd726c12716b61e6490719409884545",
+      "author_date": "2026-11-09T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:44+09:00",
+      "subject": "feat: prevent duplicate action rewards"
+    },
+    {
+      "original_commit": "425fbdb92487bb8dfda596be8636d88692d45f00",
+      "author_date": "2026-11-11T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:44+09:00",
+      "subject": "feat: settle qualified channel payouts"
+    },
+    {
+      "original_commit": "ccfd33b72b444d4dd71b220c35da5e5961e33084",
+      "author_date": "2026-11-13T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T01:54:44+09:00",
+      "subject": "feat: refund expired campaign balances"
+    },
+    {
+      "original_commit": "3cdf5c5e7f282f7300bedc2cc9718b654f2b3512",
+      "author_date": "2026-11-16T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:00:09+09:00",
+      "subject": "test: enforce performance escrow invariants"
+    },
+    {
+      "original_commit": "15f2eb1e9cc718c1e6f7af084eeccd967cbd3bdf",
+      "author_date": "2026-11-19T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:00:09+09:00",
+      "subject": "docs: document performance verification model"
+    },
+    {
+      "original_commit": "8ef0758127eab481d2fb116074ccb688b3f0ddfc",
+      "author_date": "2026-11-21T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:00:09+09:00",
+      "subject": "feat: export phase four integration artifacts"
+    },
+    {
+      "original_commit": "0f2a414b84e7fff436e2a199fe48c68a398a4b4f",
+      "author_date": "2026-11-22T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:00:11+09:00",
+      "subject": "feat: add phase four deployment scripts"
+    },
+    {
+      "original_commit": "8afb3573b9958a5f2dbdafa9499ee51189256544",
+      "author_date": "2026-11-24T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:02:58+09:00",
+      "subject": "test: add phase four integration scenarios"
+    },
+    {
+      "original_commit": "23c828ac114be7032c6a6f55556fc0da1089ca92",
+      "author_date": "2026-11-25T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:04:47+09:00",
+      "subject": "ci: add phase four contract checks"
+    },
+    {
+      "original_commit": "08ea9444d29841285640509bfb23c7880cd9be0f",
+      "author_date": "2026-11-27T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:05:50+09:00",
+      "subject": "docs: add phase four operations runbook"
+    },
+    {
+      "original_commit": "65a536514a34bc83a9bb569ebe39b31fa5003127",
+      "author_date": "2026-11-28T15:00:00+09:00",
+      "original_committer_date": "2026-11-28T02:08:42+09:00",
+      "subject": "docs: record phase four validation status"
+    },
+    {
+      "original_commit": "999ffe77156af8a5c4d95d5565e24b740ab73540",
+      "author_date": "2026-11-28T02:41:48+09:00",
+      "original_committer_date": "2026-11-28T02:43:59+09:00",
+      "subject": "fix: protect token reserves and expand phase four regression tests"
+    },
+    {
+      "original_commit": "d6b9801f15610d8203a18a56733ad9ffb39f3f00",
+      "author_date": "2026-11-28T02:43:59+09:00",
+      "original_committer_date": "2026-11-28T02:43:59+09:00",
+      "subject": "build(deps): update foundry toolchain action to v1.9.2"
+    }
+  ]
+}

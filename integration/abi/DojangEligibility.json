@@ -110,8 +110,32 @@
     "stateMutability": "view"
   },
   {
+    "type": "function",
+    "name": "readEligibility",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
     "type": "error",
     "name": "InvalidConfiguration",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OnlySelf",
     "inputs": []
   }
 ]

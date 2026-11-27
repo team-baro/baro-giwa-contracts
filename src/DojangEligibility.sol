@@ -12,6 +12,7 @@ contract DojangEligibility is IWalletEligibility {
     address public immutable ISSUER;
     bytes32 public immutable VERIFIED_ADDRESS_SCHEMA;
     error InvalidConfiguration();
+    error OnlySelf();
 
     constructor(IEAS eas, IDojangScroll scroll, address issuer, bytes32 schema) {
         if (
@@ -24,7 +25,20 @@ contract DojangEligibility is IWalletEligibility {
         VERIFIED_ADDRESS_SCHEMA = schema;
     }
 
+    /// @notice Return false for failed calls and malformed external ABI responses alike.
     function isEligible(address user) external view returns (bool) {
+        // ABI decoding errors occur in the caller and escape a try around the dependency call.
+        // An external self-call keeps all dependency reads/decoding inside the catchable frame.
+        try this.readEligibility(user) returns (bool eligible) {
+            return eligible;
+        } catch {
+            return false;
+        }
+    }
+
+    /// @dev Internal-only external boundary so malformed return data cannot revert isEligible.
+    function readEligibility(address user) external view returns (bool) {
+        if (msg.sender != address(this)) revert OnlySelf();
         bytes32 uid = bytes32(0);
         try SCROLL.isVerified(user, UPBIT_KOREA_ID) returns (bool verified) {
             if (!verified) return false;

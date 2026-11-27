@@ -19,7 +19,10 @@
 - Checks-effects-interactions and `ReentrancyGuard` protect payouts.
 - `SafeERC20` handles ERC-20 transfers; fee-on-transfer funding is rejected.
 - Claims and campaign creation can be paused without blocking matured withdrawals.
-- Reputation failures are queued for retry and cannot block a valid reward payout.
+- Optional reputation calls are capped at 200,000 gas; 50,000 gas is reserved before the call
+  for failure bookkeeping and claim completion. A gas-exhausting SBT is queued for retry without
+  blocking a sufficiently funded reward transaction. InsufficientReputationGas rejects underfunded
+  calls instead of silently skipping healthy reputation updates during gas estimation.
 - Campaign owners can permanently cancel their campaigns but cannot withdraw before the configured
   end. An operator pause is reversible; an owner cancellation is not.
 - Matured withdrawals require explicit campaign deactivation.

@@ -1,7 +1,9 @@
 # Credential trust and configuration
 
 DojangEligibility reads the current UPBIT KOREA credential UID through DojangScroll and validates
-its EAS payload. EAS/Scroll read errors return false. Both consumers and operators must treat false
+its EAS payload. EAS/Scroll read errors and malformed ABI responses return false.
+Dependency reads and decoding run inside a self-only external boundary, so caller-side decoding
+errors are caught by isEligible. Direct calls to readEligibility are rejected. Both consumers and operators must treat false
 as ineligible, not as a reason to bypass verification. A new adapter deployment is required to change trust settings.
 
 GIWA documentation reviewed 2026-11-28 lists the following GIWA Sepolia configuration:

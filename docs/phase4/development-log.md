@@ -3,7 +3,10 @@
 Actual implementation started on 2026-11-28 (Asia/Seoul).
 Author dates below are retrospective work allocation dates requested by the maintainer,
 not evidence that development, tests, deployments, or user activity occurred then.
-Committer dates retain the actual commit creation time. Existing history is preserved.
+AuthorDate and CommitterDate now both use the retrospective allocation dates so GitHub groups
+commits by the agreed schedule. The original creation timestamps are preserved in
+[history-date-provenance.json](history-date-provenance.json). Actual implementation dates remain in this table.
+The baseline before this allocation period is unchanged.
 No deployment or push is implied by this log.
 
 | Step | Allocated author date | Actual work date (KST) | Change |
@@ -74,3 +77,15 @@ A sender-fee ERC-20 regression was reproduced with five failing tests, then fixe
 Additional coverage includes recipient fees, failure rollback, cross-campaign signatures, token de-listing,
 script entry points, mixed-asset stateful accounting and expanded real-code fork integration.
 Full results: [master-review.md](master-review.md).
+
+## Date display correction and review fixes on 2026-11-28
+
+GitHub displayed the initial allocation commits under their current-day CommitterDate.
+The maintainer requested matching CommitterDate to AuthorDate, preserving trees, messages,
+authors and baseline history. These dates are scheduling metadata, not evidence of historical work.
+The later QA, dependency update and review fixes remain on their actual current day.
+
+The two independently reproduced review bugs were fixed and covered by regression tests:
+optional reputation calls now have a bounded gas budget with a post-call reserve, and malformed
+Dojang ABI responses are decoded within a catchable external boundary.
+See [review-fixes.md](review-fixes.md) for the verification results.
