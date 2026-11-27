@@ -4,6 +4,7 @@ import { Test } from "forge-std/Test.sol";
 import { StdInvariant } from "forge-std/StdInvariant.sol";
 import { SafeCast } from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import { BaroPerformanceEscrow } from "../src/BaroPerformanceEscrow.sol";
+import { MockERC20 } from "./mocks/MockERC20.sol";
 import { IWalletEligibility } from "../src/interfaces/IWalletEligibility.sol";
 
 contract PerformanceHandler is Test {
@@ -15,6 +16,9 @@ contract PerformanceHandler is Test {
     uint256 public paid;
     uint256 public refunded;
     uint256 internal sequence;
+    MockERC20 public tokenA = new MockERC20();
+    MockERC20 public tokenB = new MockERC20();
+    mapping(address => uint256) public paidByToken;
     mapping(uint256 => uint256) public refunds;
 
     constructor(BaroPerformanceEscrow target) {
@@ -26,12 +30,20 @@ contract PerformanceHandler is Test {
         return ids.length;
     }
 
-    function create(uint96 seed) external {
+    function create(uint96 seed, uint8 assetSeed) external {
         uint128 budget = uint128(bound(seed, 1 ether, 10 ether));
-        vm.deal(address(this), address(this).balance + budget);
+        address token = assetSeed % 3 == 0
+            ? address(0)
+            : assetSeed % 3 == 1 ? address(tokenA) : address(tokenB);
+        if (token == address(0)) {
+            vm.deal(address(this), address(this).balance + budget);
+        } else {
+            MockERC20(token).mint(address(this), budget);
+            MockERC20(token).approve(address(escrow), budget);
+        }
         BaroPerformanceEscrow.Terms memory t = BaroPerformanceEscrow.Terms({
             channel: address(0xCAFE),
-            token: address(0),
+            token: token,
             verifier: vm.addr(KEY),
             eligibility: IWalletEligibility(address(0)),
             budget: budget,
@@ -40,7 +52,7 @@ contract PerformanceHandler is Test {
             end: (block.timestamp + 1 days).toUint64(),
             conditionHash: keccak256("confirmed event")
         });
-        ids.push(escrow.createCampaign{ value: budget }(t));
+        ids.push(escrow.createCampaign{ value: token == address(0) ? budget : 0 }(t));
         funded += budget;
     }
 
@@ -64,6 +76,7 @@ contract PerformanceHandler is Test {
         (uint8 v, bytes32 a, bytes32 b) = vm.sign(KEY, escrow.hashReceipt(r));
         escrow.settle(r, abi.encodePacked(a, b, v));
         paid += c.terms.unitReward;
+        paidByToken[c.terms.token] += c.terms.unitReward;
     }
 
     function advance(uint32 secondsSeed) external {
@@ -89,6 +102,8 @@ contract PerformanceInvariantTest is StdInvariant, Test {
         vm.warp(1_000_000);
         escrow = new BaroPerformanceEscrow(address(this), vm.addr(0xB0B));
         handler = new PerformanceHandler(escrow);
+        escrow.setRewardTokenSupported(address(handler.tokenA()), true);
+        escrow.setRewardTokenSupported(address(handler.tokenB()), true);
         escrow.grantRole(escrow.CREATOR_ROLE(), address(handler));
         bytes4[] memory selectors = new bytes4[](4);
         selectors[0] = handler.create.selector;
@@ -101,14 +116,32 @@ contract PerformanceInvariantTest is StdInvariant, Test {
 
     function invariantFundsAreConserved() public view {
         uint256 remaining;
+        uint256[3] memory remainingByToken;
         for (uint256 i; i < handler.count(); ++i) {
             uint256 id = handler.ids(i);
             BaroPerformanceEscrow.Campaign memory c = escrow.getCampaign(id);
             assertEq(c.remainingBudget + c.paidBudget + handler.refunds(id), c.terms.budget);
             remaining += c.remainingBudget;
+            uint256 index = c.terms.token == address(0)
+                ? 0
+                : c.terms.token == address(handler.tokenA()) ? 1 : 2;
+            remainingByToken[index] += c.remainingBudget;
         }
-        assertEq(remaining, escrow.totalLiability(address(0)));
-        assertEq(address(escrow).balance, remaining);
+        assertEq(remainingByToken[0], escrow.totalLiability(address(0)));
+        assertEq(address(escrow).balance, remainingByToken[0]);
+        assertEq(remainingByToken[1], escrow.totalLiability(address(handler.tokenA())));
+        assertEq(remainingByToken[2], escrow.totalLiability(address(handler.tokenB())));
+        assertEq(handler.tokenA().balanceOf(address(escrow)), remainingByToken[1]);
+        assertEq(handler.tokenB().balanceOf(address(escrow)), remainingByToken[2]);
+        assertEq(address(0xCAFE).balance, handler.paidByToken(address(0)));
+        assertEq(
+            handler.tokenA().balanceOf(address(0xCAFE)),
+            handler.paidByToken(address(handler.tokenA()))
+        );
+        assertEq(
+            handler.tokenB().balanceOf(address(0xCAFE)),
+            handler.paidByToken(address(handler.tokenB()))
+        );
         assertEq(handler.funded(), remaining + handler.paid() + handler.refunded());
     }
 }

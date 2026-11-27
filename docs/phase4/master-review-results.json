@@ -1,0 +1,160 @@
+{
+  "validation_date_kst": "2026-11-28",
+  "target_branch": "master",
+  "preserved_remote_commit": "2eaeee3ae34faedb6e6db7eaf668af55e6612f7e",
+  "state_at_validation": "Before authorized direct master push; no PR and no onchain deployment",
+  "solidity": {
+    "passed": 114,
+    "failed": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "BaroAttendanceTest",
+        "passed": 14
+      },
+      {
+        "name": "BaroCampaignEscrowTest",
+        "passed": 24
+      },
+      {
+        "name": "BaroIndexOracleTest",
+        "passed": 10
+      },
+      {
+        "name": "BaroPerformanceEscrowTest",
+        "passed": 19
+      },
+      {
+        "name": "BaroQuestTestTokenTest",
+        "passed": 2
+      },
+      {
+        "name": "BaroReputationSBTTest",
+        "passed": 9
+      },
+      {
+        "name": "DojangEligibilityTest",
+        "passed": 11
+      },
+      {
+        "name": "IndexToolCompatibilityTest",
+        "passed": 1
+      },
+      {
+        "name": "PerformanceInvariantTest",
+        "passed": 1
+      },
+      {
+        "name": "PerformanceRegressionTest",
+        "passed": 3
+      },
+      {
+        "name": "Phase4IntegrationTest",
+        "passed": 3
+      },
+      {
+        "name": "Phase4ScriptEntryPointsTest",
+        "passed": 1
+      },
+      {
+        "name": "PublishIndexTest",
+        "passed": 4
+      },
+      {
+        "name": "LegacyTokenAccountingTest",
+        "passed": 4
+      },
+      {
+        "name": "PerformanceTokenAccountingTest",
+        "passed": 2
+      },
+      {
+        "name": "TypedDataCompatibilityTest",
+        "passed": 2
+      },
+      {
+        "name": "VerifiedAttendanceTest",
+        "passed": 3
+      },
+      {
+        "name": "GIWAPhase4ForkTest",
+        "passed": 1
+      }
+    ]
+  },
+  "python": {
+    "passed": 8,
+    "failed": 0
+  },
+  "invariant": {
+    "runs": 128,
+    "depth": 64,
+    "calls": 8192,
+    "reverts": 0,
+    "assets": [
+      "ETH",
+      "MockERC20 A",
+      "MockERC20 B"
+    ]
+  },
+  "fork": {
+    "chain_id": 91342,
+    "block": 42453800,
+    "writes": "Local VM only",
+    "real_Upbit_positive_test": false
+  },
+  "production_coverage": {
+    "src/BaroAttendance.sol": {
+      "LF": 56,
+      "LH": 56,
+      "BRF": 14,
+      "BRH": 14
+    },
+    "src/BaroCampaignEscrow.sol": {
+      "LF": 145,
+      "LH": 136,
+      "BRF": 46,
+      "BRH": 25
+    },
+    "src/BaroIndexOracle.sol": {
+      "LF": 22,
+      "LH": 22,
+      "BRF": 6,
+      "BRH": 6
+    },
+    "src/BaroPerformanceEscrow.sol": {
+      "LF": 99,
+      "LH": 99,
+      "BRF": 24,
+      "BRH": 24
+    },
+    "src/BaroQuestTestToken.sol": {
+      "LF": 4,
+      "LH": 4,
+      "BRF": 2,
+      "BRH": 2
+    },
+    "src/BaroReputationSBT.sol": {
+      "LF": 60,
+      "LH": 53,
+      "BRF": 10,
+      "BRH": 5
+    },
+    "src/DojangEligibility.sol": {
+      "LF": 31,
+      "LH": 31,
+      "BRF": 12,
+      "BRH": 12
+    }
+  },
+  "slither": {
+    "High": 0,
+    "Medium": 0,
+    "Low": 7,
+    "Informational": 5
+  },
+  "regression_reproduction": {
+    "sender_fee_tests_failing_before_fix": 5,
+    "sender_fee_tests_passing_after_fix": 5
+  }
+}

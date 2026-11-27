@@ -440,7 +440,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
         if (campaign.rewardToken == address(0)) {
             payable(claim.user).sendValue(claim.amount);
         } else {
-            IERC20(campaign.rewardToken).safeTransfer(claim.user, claim.amount);
+            _transferExactERC20(campaign.rewardToken, claim.user, claim.amount);
         }
 
         // Interactions: credit reputation. A failing SBT must never block a payout the user
@@ -516,7 +516,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
         if (campaign.rewardToken == address(0)) {
             payable(campaign.projectOwner).sendValue(amount);
         } else {
-            IERC20(campaign.rewardToken).safeTransfer(campaign.projectOwner, amount);
+            _transferExactERC20(campaign.rewardToken, campaign.projectOwner, amount);
         }
 
         emit RemainingBudgetWithdrawn(
@@ -548,7 +548,7 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
         if (rewardToken == address(0)) {
             recipient.sendValue(amount);
         } else {
-            IERC20(rewardToken).safeTransfer(recipient, amount);
+            _transferExactERC20(rewardToken, recipient, amount);
         }
 
         emit ExcessBalanceRecovered(rewardToken, recipient, amount);
@@ -655,5 +655,20 @@ contract BaroCampaignEscrow is AccessControlDefaultAdminRules, EIP712, Pausable,
     function _getCampaign(uint256 campaignId) private view returns (Campaign storage campaign) {
         campaign = campaigns[campaignId];
         if (campaign.projectOwner == address(0)) revert CampaignNotFound();
+    }
+
+    /// @dev Both sides must move exactly the booked amount, including excess recovery.
+    ///      Sender-paid fees must never consume another campaign's reserves.
+    function _transferExactERC20(address rewardToken, address recipient, uint256 amount) private {
+        IERC20 token = IERC20(rewardToken);
+        uint256 escrowBefore = token.balanceOf(address(this));
+        uint256 recipientBefore = token.balanceOf(recipient);
+        token.safeTransfer(recipient, amount);
+        uint256 escrowAfter = token.balanceOf(address(this));
+        uint256 recipientAfter = token.balanceOf(recipient);
+        if (
+            escrowAfter > escrowBefore || escrowBefore - escrowAfter != amount
+                || recipientAfter < recipientBefore || recipientAfter - recipientBefore != amount
+        ) revert UnsupportedTokenBehavior();
     }
 }

@@ -1,4 +1,7 @@
-# Phase 4 implementation and validation
+# Initial Phase 4 implementation and validation
+
+> Historical snapshot at commit `65a5365`, before the master review.
+> See [master-review.md](master-review.md) for the later fixes and full pre-push results.
 
 Actual implementation and verification date: 2026-11-28 (Asia/Seoul).
 Branch: `phase4/contracts`. Baseline: `fa0143e3909c0967bbf0fa43ab6655729eccaac3`.

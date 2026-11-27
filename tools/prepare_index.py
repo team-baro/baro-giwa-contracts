@@ -23,14 +23,20 @@ def integer(value, low, high):
 
 def prepare(raw):
     data = json.loads(raw)
+    if not isinstance(data, dict) or not {'day', 'fearGreed', 'projects'} <= data.keys():
+        raise ValueError('source requires day, fearGreed, and projects')
     day = integer(data['day'], 0, 2**256 - 1)
     fear = integer(data['fearGreed'], 0, 100)
     leaves = []
     projects = data['projects']
-    if not projects:
+    if not isinstance(projects, list) or not projects:
         raise ValueError('projects cannot be empty')
     seen = set()
     for row in projects:
+        if not isinstance(row, dict) or not {'projectId', 'mindshareBps', 'gapBps'} <= row.keys():
+            raise ValueError('each project requires projectId, mindshareBps, and gapBps')
+        if not isinstance(row['projectId'], str):
+            raise ValueError('projectId must be a bytes32 hex string')
         project = row['projectId'].lower()
         if not re.fullmatch(r'0x[0-9a-f]{64}', project) or int(project, 16) == 0 or project in seen:
             raise ValueError('projectId must be unique nonzero bytes32')
@@ -59,7 +65,7 @@ def prepare(raw):
             if sibling < len(layer):
                 proof.append(layer[sibling])
             idx //= 2
-        results.append({**row, 'leaf': leaves[i], 'proof': proof})
+        results.append({**row, 'projectId': row['projectId'].lower(), 'leaf': leaves[i], 'proof': proof})
     source = keccak('0x' + raw.hex())
     return {
         'day': day, 'fearGreed': fear, 'projectRoot': root, 'sourceHash': source,
@@ -72,4 +78,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('source', type=Path)
     args = parser.parse_args()
-    print(json.dumps(prepare(args.source.read_bytes()), indent=2))
+    try:
+        result = prepare(args.source.read_bytes())
+    except (OSError, ValueError, TypeError, KeyError) as error:
+        parser.error(str(error))
+    print(json.dumps(result, indent=2))

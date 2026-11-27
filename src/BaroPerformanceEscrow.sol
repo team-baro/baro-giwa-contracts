@@ -252,9 +252,15 @@ contract BaroPerformanceEscrow is
             payable(recipient).sendValue(amount);
         } else {
             IERC20 erc20 = IERC20(token);
+            uint256 escrowBefore = erc20.balanceOf(address(this));
             uint256 beforeBalance = erc20.balanceOf(recipient);
             erc20.safeTransfer(recipient, amount);
-            if (erc20.balanceOf(recipient) - beforeBalance != amount) {
+            uint256 escrowAfter = erc20.balanceOf(address(this));
+            uint256 recipientAfter = erc20.balanceOf(recipient);
+            if (
+                escrowAfter > escrowBefore || escrowBefore - escrowAfter != amount
+                    || recipientAfter < beforeBalance || recipientAfter - beforeBalance != amount
+            ) {
                 revert UnsupportedTokenBehavior();
             }
         }
