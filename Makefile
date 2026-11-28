@@ -5,7 +5,7 @@ check:
 	forge fmt --check
 	forge lint
 	forge build --sizes
-	forge test -vvv
+	forge test --force -vvv
 	./scripts/check-coverage.sh
 	PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test/tooling -v
 	python3 tools/export_integration.py --check

@@ -1,0 +1,142 @@
+{
+  "actual_work_date_kst": "2026-11-28",
+  "baseline": "fa0143e3909c0967bbf0fa43ab6655729eccaac3",
+  "branch": "phase4/contracts",
+  "solidity_tests": {
+    "passed": 104,
+    "failed": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "BaroAttendanceTest",
+        "passed": 14
+      },
+      {
+        "name": "BaroCampaignEscrowTest",
+        "passed": 24
+      },
+      {
+        "name": "BaroIndexOracleTest",
+        "passed": 10
+      },
+      {
+        "name": "BaroPerformanceEscrowTest",
+        "passed": 19
+      },
+      {
+        "name": "BaroQuestTestTokenTest",
+        "passed": 2
+      },
+      {
+        "name": "BaroReputationSBTTest",
+        "passed": 9
+      },
+      {
+        "name": "DojangEligibilityTest",
+        "passed": 11
+      },
+      {
+        "name": "IndexToolCompatibilityTest",
+        "passed": 1
+      },
+      {
+        "name": "PerformanceInvariantTest",
+        "passed": 1
+      },
+      {
+        "name": "Phase4IntegrationTest",
+        "passed": 3
+      },
+      {
+        "name": "PublishIndexTest",
+        "passed": 4
+      },
+      {
+        "name": "TypedDataCompatibilityTest",
+        "passed": 2
+      },
+      {
+        "name": "VerifiedAttendanceTest",
+        "passed": 3
+      },
+      {
+        "name": "GIWAPhase4ForkTest",
+        "passed": 1
+      }
+    ]
+  },
+  "tooling_tests": {
+    "passed": 3,
+    "failed": 0
+  },
+  "fuzz_runs_per_test": 512,
+  "invariant": {
+    "runs": 128,
+    "depth": 64,
+    "calls": 8192,
+    "reverts": 0
+  },
+  "fork": {
+    "chain_id": 91342,
+    "block": 42453800,
+    "writes": "local VM only",
+    "real_upbit_positive_case": false
+  },
+  "coverage_src_only": {
+    "src/BaroAttendance.sol": {
+      "LF": 56,
+      "LH": 56,
+      "BRF": 14,
+      "BRH": 14
+    },
+    "src/BaroCampaignEscrow.sol": {
+      "LF": 135,
+      "LH": 124,
+      "BRF": 45,
+      "BRH": 22
+    },
+    "src/BaroIndexOracle.sol": {
+      "LF": 22,
+      "LH": 22,
+      "BRF": 6,
+      "BRH": 6
+    },
+    "src/BaroPerformanceEscrow.sol": {
+      "LF": 94,
+      "LH": 94,
+      "BRF": 24,
+      "BRH": 24
+    },
+    "src/BaroQuestTestToken.sol": {
+      "LF": 4,
+      "LH": 4,
+      "BRF": 2,
+      "BRH": 2
+    },
+    "src/BaroReputationSBT.sol": {
+      "LF": 60,
+      "LH": 53,
+      "BRF": 10,
+      "BRH": 5
+    },
+    "src/DojangEligibility.sol": {
+      "LF": 31,
+      "LH": 31,
+      "BRF": 12,
+      "BRH": 12
+    }
+  },
+  "slither": {
+    "version": "0.11.5",
+    "high": 0,
+    "medium": 0,
+    "low": 7,
+    "informational": 5,
+    "retained_checks": {
+      "timestamp": 7,
+      "naming-convention": 5
+    }
+  },
+  "public_deployment": false,
+  "pushed": false
+}

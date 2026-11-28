@@ -4,7 +4,7 @@ import { Test } from "forge-std/Test.sol";
 import { DeployPhase4 } from "../script/DeployPhase4.s.sol";
 import { BaroAttendance } from "../src/BaroAttendance.sol";
 import { BaroPerformanceEscrow } from "../src/BaroPerformanceEscrow.sol";
-import { IEAS, Attestation } from "../src/interfaces/IEAS.sol";
+import { Attestation } from "../src/interfaces/IEAS.sol";
 import { IDojangScroll } from "../src/interfaces/IWalletEligibility.sol";
 import { MockEAS } from "./mocks/MockEAS.sol";
 import { MockDojangScroll } from "./mocks/MockEligibility.sol";

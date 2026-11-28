@@ -127,4 +127,15 @@ contract DojangEligibilityTest is Test {
         eas.configure(false, false, false);
         assertTrue(verifier.isEligible(user));
     }
+
+    function testVerifiedFlagWithoutCurrentUIDDoesNotQualify() public {
+        vm.mockCall(
+            address(scroll),
+            abi.encodeCall(
+                scroll.getVerifiedAddressAttestationUid, (user, verifier.UPBIT_KOREA_ID())
+            ),
+            abi.encode(bytes32(0))
+        );
+        assertFalse(verifier.isEligible(user));
+    }
 }
